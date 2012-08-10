@@ -3,6 +3,7 @@
   <groupId>net.rptools.common</groupId>
   <artifactId>rptools-common</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>rptools-common</name>
   <description>RPTools common components</description>
   <properties>
