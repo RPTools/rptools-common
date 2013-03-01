@@ -70,7 +70,6 @@ public class ListShuffleFunction implements ScriptFunction {
 		List<DataValue> list = new ArrayList<>();
 		
 		// If there is only one argument and its a list then shuffle the list itself.
-		// TODO maybe varargs should consume elements of list...
 		if (values.asList().size() == 1 && values.asList().get(0).dataType() == DataType.LIST) {
 			values = values.asList().get(0);
 		}
