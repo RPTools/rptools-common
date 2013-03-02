@@ -19,6 +19,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.rptools.parser.functions.dictionary.DictFunction;
+import net.rptools.parser.functions.dictionary.DictGetFunction;
+import net.rptools.parser.functions.dictionary.DictRemoveFunction;
+import net.rptools.parser.functions.dictionary.DictSetFunction;
 import net.rptools.parser.functions.list.ListFunction;
 import net.rptools.parser.functions.list.ListIntersectionFunction;
 import net.rptools.parser.functions.list.ListMinusFunction;
@@ -49,9 +53,12 @@ public class BuiltInFunctionList {
 	/**
 	 * Private construction so that an instance of the class can not be created.
 	 */
-	/*private BuiltInFunctionList() {
-	}*/
+	private BuiltInFunctionList() {
+	}
 
+    /**
+     * Initialize the built in functions.
+     */
     private void lazyInit() {
         addBuiltInFunction(ListFunction .getListFunction());
         addBuiltInFunction(new FunctionAlias("list.create", ListFunction.getListFunction()));
@@ -59,6 +66,11 @@ public class BuiltInFunctionList {
         addBuiltInFunction(ListIntersectionFunction.getListFunction());
         addBuiltInFunction(ListMinusFunction.getListFunction());
         addBuiltInFunction(ListShuffleFunction.getListFunction());
+        addBuiltInFunction(DictFunction.getDictFunction());
+        addBuiltInFunction(new FunctionAlias("dict.create", DictFunction.getDictFunction()));
+        addBuiltInFunction(DictSetFunction.getDictSetFunction());
+        addBuiltInFunction(DictGetFunction.getDictGetFunction());
+        addBuiltInFunction(DictRemoveFunction.getDictRemoveFunction());
     }
 	/**
 	 * Adds a function to the list of the built in functions.

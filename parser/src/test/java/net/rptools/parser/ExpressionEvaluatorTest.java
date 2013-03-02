@@ -373,7 +373,28 @@ public class ExpressionEvaluatorTest {
             System.out.println("ListSumR = " + dv);
             System.out.println("a = " + evaluator.getSymbolTable().getVariable("a"));
 
-		} catch (Exception e) {
+            dv = ScriptEvaluator.getInstance("dict(v1: 'test', v2: 1, vv: 2.2, v0: list(3, 6, 1))").evaluateNext();
+            System.out.println("Dict Val = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.set($a, v7: -97)").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.set($a, v7: -97, vg: -22/2)").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.get($a, 'v1')").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.remove($a, 'v1')").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.remove($a, 'v1', 'vv')").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.remove($a, list('v1', 'vv'))").evaluateNext();
+            System.out.println(dv);
+
+        } catch (Exception e) {
             e.printStackTrace();
 		}
 	}

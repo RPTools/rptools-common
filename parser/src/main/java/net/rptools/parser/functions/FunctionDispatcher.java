@@ -14,11 +14,7 @@
  */
 package net.rptools.parser.functions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 import net.rptools.lib.datavalue.DataValue;
@@ -158,6 +154,7 @@ public final class FunctionDispatcher {
         } catch (ScriptFunctionException es) {
 			throw new ExpressionEvaluatorException(es.getMessage(), es);
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw new ExpressionEvaluatorException(e.getMessage(), e);
 		}
 		
@@ -228,9 +225,11 @@ public final class FunctionDispatcher {
 		
 		// First turn positional parameters into named parameters
 		Map<String, DataValue> argMap = resolvePositionalArguments(def, args);
-		
-		
-		// Next step is to add any named parameters.
+
+        // Unknown parementers that will be assigned to a named consumer if one exists.
+        Map<String, DataValue> unknownArgs = new LinkedHashMap<>();
+
+        // Next step is to add any named parameters.
 		for (String namep : args.getNamedArguments().keySet()) {
 			if (argMap.containsKey(namep)) {
 				throw new IllegalArgumentException("Call to function " + def.name() + " defines argument " + namep +
@@ -248,10 +247,16 @@ public final class FunctionDispatcher {
 			FunctionParameter fp = def.getParameter(namep);
 			if (fp != null) {
 				dv = fp.dataType().coerce(dv);
-			}
-			
-			argMap.put(namep, dv);
+                argMap.put(namep, dv);
+            } else {  // Add to unknown parameter list
+                unknownArgs.put(namep, dv);
+            }
 		}
+
+        // If there is a named parameter consumer then consume any unknown arguments.
+        if (def.hasNamedArgumentConsumer()) {
+            argMap.put(def.getNamedArgumentConsumer().name(), DataValueFactory.dictionaryValue(unknownArgs));
+        }
 		
 		// Finally add any parameters with default arguments.
 		for (FunctionParameter p : def.parameters()) {

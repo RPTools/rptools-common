@@ -74,7 +74,7 @@ final class DictionaryDataValue implements DataValue {
 
 	@Override
 	public List<DataValue> asList() {
-		throw new UnsupportedOperationException("Can not convert dictionary to a list value.");
+        return Collections.<DataValue>singletonList(this);
 	}
 
 	@Override
@@ -182,7 +182,7 @@ final class DictionaryDataValue implements DataValue {
 
 	@Override
 	public DataValue asListValue() {
-		return this;
+		return DataValueFactory.listValue(asList());
 	}
 
 	@Override
