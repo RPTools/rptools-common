@@ -17,10 +17,6 @@ package net.rptools.parser.jsapi;
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.permissions.PermissionLevel;
 import net.rptools.parser.functions.FunctionDefinitionBuilder;
-import net.rptools.parser.functions.javascript.ExportedFunction;
-import net.rptools.parser.functions.javascript.JavaScriptFunction;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.NativeObject;
 
 import java.util.*;
 

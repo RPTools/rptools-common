@@ -166,7 +166,7 @@ public class FunctionParameter {
 	 * 
 	 * @return the data type of the function parameter.
 	 */
-	public DataType dataTyoe() {
+	public DataType dataType() {
 		return dataType;
 	}
 	

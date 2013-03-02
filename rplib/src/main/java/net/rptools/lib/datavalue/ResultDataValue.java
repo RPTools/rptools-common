@@ -130,7 +130,7 @@ final class ResultDataValue implements DataValue {
 
 	@Override
 	public String toString() {
-		return dataType().toString() + ": " + asString();
+		return "Data Value " + result.toString();
 	}
 
 

@@ -196,13 +196,15 @@ public final class FunctionDispatcher {
 				if (param.consumesRemaining()) {
 					consumerList.add(dv);
 				} else {
-					argMap.put(param.name(), param.dataTyoe().coerce(dv));
+					argMap.put(param.name(), param.dataType().coerce(dv));
 				}
 			}
 		}
-		
-		argMap.put(def.getPositionalArgumentConsumer().name(), DataValueFactory.listValue(consumerList));
-		
+
+        if (def.hasPositionalArgumentConsumer()) {
+		    argMap.put(def.getPositionalArgumentConsumer().name(), DataValueFactory.listValue(consumerList));
+        }
+
 		return argMap;
 		
 	}
@@ -245,7 +247,7 @@ public final class FunctionDispatcher {
 			// what the function expects.
 			FunctionParameter fp = def.getParameter(namep);
 			if (fp != null) {
-				dv = fp.dataTyoe().coerce(dv);
+				dv = fp.dataType().coerce(dv);
 			}
 			
 			argMap.put(namep, dv);

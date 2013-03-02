@@ -137,7 +137,7 @@ public class FunctionDefinitionBuilder {
 					if (foundConsumer) {
 						throw new IllegalArgumentException("Can only have one argument consumer.");
 					}
-					if (fp.dataTyoe() == DataType.LIST) {
+					if (fp.dataType() == DataType.LIST) {
 						positionalConsumerName = fp.name();
 					} else {
 						namedConsumerName = fp.name();

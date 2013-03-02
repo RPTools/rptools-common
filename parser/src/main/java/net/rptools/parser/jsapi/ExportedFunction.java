@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package net.rptools.parser.functions.javascript;
+package net.rptools.parser.jsapi;
 
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.permissions.PermissionLevel;
@@ -57,11 +57,11 @@ public class ExportedFunction {
             throw new NullPointerException("Return type of exported function is null");
         }
 
-        if (params == name) {
+        if (params == null) {
             throw new NullPointerException("Parameter List of exported function is null");
         }
 
-        if (jsFuncName == name) {
+        if (jsFuncName == null) {
             throw new NullPointerException("JavaScript name of exported function is null");
         }
 

@@ -17,11 +17,13 @@ package net.rptools.parser.functions.javascript;
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.datavalue.DataValueFactory;
+import net.rptools.lib.result.ResultBuilder;
 import net.rptools.parser.ScriptContext;
 import net.rptools.parser.functions.FunctionDefinitionBuilder;
 import net.rptools.parser.functions.ScriptFunction;
 import net.rptools.parser.functions.ScriptFunctionException;
 import net.rptools.parser.jsapi.ExportJS;
+import net.rptools.parser.jsapi.ExportedFunction;
 import org.mozilla.javascript.*;
 
 import java.io.IOException;
@@ -40,6 +42,15 @@ public class JavaScriptFunctionEvaluator {
 
     /** The name of the JavaScript function that converts return to a {@link DataValue}. */
     private final static String DATAVALUE_CONVERSION_FUNCTION = "rptools.convertToDataValue";
+
+    /** The id of the JavaScript object to use as the value of the result. */
+    private final static String RESULT_VALUE_ID = "value";
+
+    /** The id of the JavaScript object to use as the individual rolls of the result. */
+    private final static String RESULT_INDIVIDUAL_ID = "individual";
+
+    /** The id of the JavaScript object to use as the details of the result. */
+    private final static String RESULT_DETAILS_ID = "details";
 
     /** The singleton instance. */
 	private final static JavaScriptFunctionEvaluator INSTANCE = new JavaScriptFunctionEvaluator();
@@ -188,49 +199,6 @@ public class JavaScriptFunctionEvaluator {
     }
 
 
-    private Object toJSArg(DataValue val) {
-        Object ret = null;
-        switch(val.dataType()) {
-            case LONG:
-                ret = Long.valueOf(val.asLong());
-                break;
-            case DOUBLE:
-                ret = Double.valueOf(val.asDouble());
-                break;
-            case STRING:
-                ret = val.asString();
-                break;
-            case LIST:
-                List<Object> lst = new ArrayList<>();
-                for (DataValue dv : val.asList()) {
-                    lst.add(toJSArg(dv));
-                }
-                //ret = new NativeArray(lst.toArray());
-                ret = lst.toArray();
-                break;
-            case DICTIONARY:
-                //NativeObject nobj = new NativeObject();
-                Map<Object, Object> nobj = new HashMap<>();
-                for (Map.Entry<String, DataValue> entry : val.asDictionary().entrySet()) {
-                    nobj.put(entry.getKey(), toJSArg(entry.getValue()));
-                }
-                ret = nobj;
-                break;
-            case RESULT:
-                // TODO:
-                break;
-            default:
-                throw new UnsupportedOperationException("Can not convert " + val.dataType() + " to JavaScript type.");
-        }
-
-        return ret;
-    }
-
-    private Object[] toJSArgs(Map<String, DataValue> args) {
-        Object val = toJSArg(DataValueFactory.dictionaryValue(args));
-        return new Object[] { val };
-    }
-
     /**
      * Returns the {@link DataValue} of type {@link DataType#LONG} representation of the object.
      *
@@ -342,8 +310,33 @@ public class JavaScriptFunctionEvaluator {
      *
      */
     private DataValue convertToResult(Scriptable scope, Object o) {
-        // TODO: need to do JavaScript result first.
-        return null;
+        System.out.println("Result type = " + o.getClass());
+        NativeObject no = (NativeObject)o;
+
+        Map<String, Object> vals = new HashMap<>();
+        for (Object id : no.keySet()) {
+            vals.put(id.toString(), no.get(id));
+        }
+
+        if (vals.containsKey(RESULT_VALUE_ID) == false) {
+            throw new UnsupportedOperationException("JavaScript object can not be converted to a result.");
+        }
+
+
+        ResultBuilder resultBuilder = new ResultBuilder();
+        resultBuilder.setValue(convertToDataValue(scope, vals.get(RESULT_VALUE_ID)));
+
+        if (vals.containsKey(RESULT_DETAILS_ID)) {
+            resultBuilder.setDetailedResult(convertToDataValue(scope, vals.get(RESULT_DETAILS_ID)));
+        }
+
+        if (vals.containsKey(RESULT_INDIVIDUAL_ID)) {
+            resultBuilder.setIndividualValues(convertToDataValue(scope, vals.get(RESULT_INDIVIDUAL_ID)).asList());
+        }
+
+        DataValue dv =  DataValueFactory.resultValue(resultBuilder.toResult());
+
+        return dv;
     }
 
 
@@ -361,17 +354,17 @@ public class JavaScriptFunctionEvaluator {
         if (o instanceof NativeArray) {
             List<DataValue> lst = new ArrayList<>();
             NativeArray arr = (NativeArray)o;
-            for (Object ele : arr.getAllIds()) {
+            for (Object ele : arr.toArray()) {
                 DataValue val = convertToDataValue(scope, ele);
                 lst.add(val);
             }
             retVal = DataValueFactory.listValue(lst);
         } else if (o instanceof NativeObject) {
             retVal = convertToDictionary(scope, o);
-        } else if (o instanceof String) {
+        } else if (o instanceof String || o instanceof ConsString) {
             retVal = convertToStringValue(o);
         } else {
-            DataValue num = convertToDoubleValue(0);
+            DataValue num = convertToDoubleValue(o);
             if (Math.round(num.asDouble()) == num.asLong()) {
                 num = num.asLongValue();
             }
@@ -399,7 +392,7 @@ public class JavaScriptFunctionEvaluator {
             FunctionDefinitionBuilder fdb = new FunctionDefinitionBuilder();
             fdb.setName(ef.getFunctionName());
             fdb.setReturnType(ef.getReturnType());
-            fdb.setDefaultPermission(ef.getPermissionLevel());
+            fdb.setDefaultPermission(ef.getDefaultPermissionLevel());
 
             NativeArray narr = (NativeArray) ef.getParamList();
             for (Object o : narr.toArray()) {
@@ -452,6 +445,8 @@ public class JavaScriptFunctionEvaluator {
         List<JavaScriptFunction> definedFunctions = new ArrayList<>();
 
         Context jsConext = Context.enter();
+
+        resetRecentlyDefined();
 
         try {
             Scriptable scriptScope;

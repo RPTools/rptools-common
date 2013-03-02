@@ -365,9 +365,16 @@ public class ExpressionEvaluatorTest {
 			DataValue dv = ScriptEvaluator.getInstance("list.shuffle(list(3,1,8,9,2,7))").evaluateNext();
 			System.out.println(dv);
             dv = ScriptEvaluator.getInstance("listSum(1,2,3)").evaluateNext();
-            System.out.println(dv);
+            System.out.println("listSum = " + dv);
+            dv = ScriptEvaluator.getInstance("$a = listSumR(1,2,7,4)").evaluateNext();
+            System.out.println("listSumR = " + dv);
+            ScriptEvaluator evaluator = ScriptEvaluator.getInstance("$a = listSumR(1,12,7,9); $a; showResult($a)");
+            dv = evaluator.evaluateNext();
+            System.out.println("ListSumR = " + dv);
+            System.out.println("a = " + evaluator.getSymbolTable().getVariable("a"));
+
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+            e.printStackTrace();
 		}
 	}
 	

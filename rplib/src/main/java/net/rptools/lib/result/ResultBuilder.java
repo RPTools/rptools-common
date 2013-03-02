@@ -171,8 +171,18 @@ public class ResultBuilder {
 			values.add(value);
 		}
 		
-		return new Result(detailedResult, detailedResult, values, rollExpression);
+		return new Result(value, detailedResult, values, rollExpression);
 	}
-	
+
+
+    @Override
+    public String toString() {
+        if (rollExpression == null) {
+            return "Result: value = " + this.value + ", details = " + detailedResult + ", individual = " + values;
+        } else {
+            return "Result: value = " + this.value + ", details = " + detailedResult + ", individual = " + values +
+                      " Roll Expression = " + rollExpression.toString();
+        }
+    }
 	
 }

@@ -96,6 +96,12 @@ public class Result {
 		return rollExpression;
 	}
 
+    @Override
+    public String toString() {
+        return "Result: value = " + value.toString() + ", detailedResult = " +
+                detailedResult.toString() + ", values = " + values.toString();
+    }
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

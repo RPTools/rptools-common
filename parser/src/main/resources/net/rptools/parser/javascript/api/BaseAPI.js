@@ -12,6 +12,119 @@
  * limitations under the License.
  *
  */
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Creates a new Result() object.
+//
+// Parameters:
+//  value       The value of the result.
+//  details     The detailed value of the result.
+//  individual  The individual values that make up the result.
+//
+function Result(value, details, individual) {
+    if (value) {
+        this.value = value;
+    }
+
+    if (details) {
+        this.details = details;
+    }
+
+    if (individual) {
+        this.individual = individual;
+    }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Sets the value of result.
+//
+// Parameters:
+//      val     The value to set.
+//
+// Returns:
+//  this so methods can be chained.
+//
+Result.prototype.setValue = function(val) {
+    this.value = val;
+    return this;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Sets the details of how the result is made up.
+//
+// Parameters:
+//      val     The value to set.
+//
+// Returns:
+//  this so methods can be chained.
+//
+Result.prototype.setDetails = function(val) {
+    this.details = val;
+    return this;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Sets the individual values that make up a result.
+//
+// Parameters:
+//      vals     The values to set.
+//
+// Returns:
+//  this so methods can be chained.
+//
+Result.prototype.setIndividualValues = function(vals) {
+    this.individual = vals;
+    return this;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Returns the value of result.
+//
+// Parameters:
+//
+// Returns:
+//  The value.
+//
+Result.prototype.getValue = function() {
+    return this.value;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Returns the details of how the result is made up.
+//
+// Parameters:
+//
+// Returns:
+//  The details.
+//
+Result.prototype.getDetails = function() {
+    return this.details;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Returns the individual values that the result is made up of.
+//
+// Parameters:
+//
+// Returns:
+//  The individual values.
+//
+Result.prototype.getIndividualValues = function() {
+    return this.individual;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // create the net.rptools namespace.
 var rptools = {};
 
@@ -36,9 +149,10 @@ rptools.convertToDataValue = function(value, returnType) {
 }
 
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//
+// Function to convert a Java net.rptools.lib.datavalue.DataValue object to JavaScript
+// object(s).
 //
 rptools.convertDataValue = function(dv) {
     if (dv.dataType() == net.rptools.lib.datavalue.DataType.LIST) {
@@ -55,13 +169,22 @@ rptools.convertDataValue = function(dv) {
         while (iter.hasNext()) {
             var name = iter.next();
             var val = dict.get(name);
-            obj[name] = val;
+            obj[name] = rptools.convertDataValue(val);
         }
 
         return obj;
     } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.RESULT) {
-        // TOOD
-        return {};
+        var res = dv.asResult();
+        var val = rptools.convertDataValue(res.getValue());
+        var det = rptools.convertDataValue(res.getDetailedResult());
+        var indiv = [];
+        var iter = res.getValues().iterator();
+        while (iter.hasNext()) {
+            indiv.push(rptools.convertDataValue(iter.next()));
+        }
+
+       return new Result(val, det, indiv);
+
     } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.LONG) {
         return dv.asLong();
     } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.DOUBLE) {
@@ -71,8 +194,9 @@ rptools.convertDataValue = function(dv) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//
+// Function to convert the RPTools script arguments from Java to JavaScript objects.
 //
 rptools.convertArgs = function(args) {
     var argsObj = {};
@@ -85,6 +209,7 @@ rptools.convertArgs = function(args) {
     return argsObj;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Class used to export functions to the RPTools script.
 //
@@ -114,6 +239,7 @@ function ExportedFunction(name, returnType, jsFunctionName, permission) {
     this.parameterList = [];
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Add a parameter to the function.
 //
@@ -139,14 +265,14 @@ ExportedFunction.prototype.addParameter = function(name, paramType, defaultVal) 
     var pType = paramType;
     var varargFlag = false;
 
-    if (paramType == ExportedFunction.PARAM_LIST_VARARGS) {
-      pType = ExportedFunction.PARAM_LIST;
+    if (paramType == ExportedFunction.DATA_TYPE_LIST_VARARGS) {
+      pType = ExportedFunction.DATA_TYPE_LIST;
       varargFlag = true;
       this.hasVarargs = true;
     }
 
-    if (paramType == ExportedFunction.PARAM_DICT_VARARGS) {
-        pType = ExportedFunction.PARAM_DICT;
+    if (paramType == ExportedFunction.DATA_TYPE_DICT_VARARGS) {
+        pType = ExportedFunction.DATA_TYPE_DICT;
         varargFlag = true;
         this.hasVarargs = true;
     }
@@ -156,7 +282,7 @@ ExportedFunction.prototype.addParameter = function(name, paramType, defaultVal) 
     this.parameterList.push(args);
 };
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Sets the function name.
 //
@@ -170,6 +296,7 @@ ExportedFunction.prototype.setName = function(name) {
 };
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Exports the function to the RPTools scripting language.
 //
@@ -183,19 +310,40 @@ ExportedFunction.prototype.export = function() {
 };
 
 
-ExportedFunction.PARAM_INT = net.rptools.lib.datavalue.DataType.LONG.toString();
-ExportedFunction.PARAM_FLOAT = net.rptools.lib.datavalue.DataType.DOUBLE.toString();
-ExportedFunction.PARAM_STRING = net.rptools.lib.datavalue.DataType.STRING.toString();
-ExportedFunction.PARAM_LIST = net.rptools.lib.datavalue.DataType.LIST.toString();
-ExportedFunction.PARAM_DICT = net.rptools.lib.datavalue.DataType.DICTIONARY.toString();
-ExportedFunction.PARAM_RESULT = net.rptools.lib.datavalue.DataType.RESULT.toString();
-ExportedFunction.PARAM_LIST_VARARGS = "List*";
-ExportedFunction.PARAM_DICT_VARARGS = "Dictionary*";
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Different parameter and return types types that a function can accept and return.
+
+// Long integer type.
+ExportedFunction.DATA_TYPE_LONG = net.rptools.lib.datavalue.DataType.LONG.toString();
+// Synonym for DATA_TYPE_LONG.
+ExportedFunction.DATA_TYPE_INT = net.rptools.lib.datavalue.DataType.LONG.toString();
+// Double floating point type.
+ExportedFunction.DATA_TYPE_DOUBLE = net.rptools.lib.datavalue.DataType.DOUBLE.toString();
+// Synonym for DATA_TYPE_DOUBLE.
+ExportedFunction.DATA_TYPE_FLOAT = ExportedFunction.DATA_TYPE_DOUBLE;
+// String type.
+ExportedFunction.DATA_TYPE_STRING = net.rptools.lib.datavalue.DataType.STRING.toString();
+// List type.
+ExportedFunction.DATA_TYPE_LIST = net.rptools.lib.datavalue.DataType.LIST.toString();
+// Dictionary (maps values to a string) type.
+ExportedFunction.DATA_TYPE_DICT = net.rptools.lib.datavalue.DataType.DICTIONARY.toString();
+// Result type.
+ExportedFunction.DATA_TYPE_RESULT = net.rptools.lib.datavalue.DataType.RESULT.toString();
+// Variable arguments list type. Used for a variable amount of positional parameters.
+ExportedFunction.DATA_TYPE_LIST_VARARGS = "List*";
+// Variable arguments dictionary type. Used for a variable amount of named parameters.
+ExportedFunction.DATA_TYPE_DICT_VARARGS = "Dictionary*";
 
 
-// TODO:
-ExportedFunction.PERM_GM = "gm";
-ExportedFunction.PERM_PLAYER = "player";
-ExportedFunction.PERM_OBSERVER = "observer";
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Permissions required to execute the function.
 
+// Player must be a GM to execute.
+ExportedFunction.PERM_GM = net.rptools.lib.permissions.PermissionLevel.GM.toString();
+// Must be a player or GM to execute.
+ExportedFunction.PERM_PLAYER = net.rptools.lib.permissions.PermissionLevel.PLAYER.toString();
+// Observer (or anyone) can execute.
+ExportedFunction.PERM_OBSERVER = net.rptools.lib.permissions.PermissionLevel.OBSERVER.toString();
 
