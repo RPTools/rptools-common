@@ -73,7 +73,14 @@ expression returns [net.rptools.parser.tree.ScriptTreeNode node]
       }
     | i=Integer {
         node = new net.rptools.parser.tree.ConstantNode(java.lang.Integer.parseInt(i.toString())); 
-      } 
+      }
+    | bv=Boolean {
+      if (bv.toString().equals("true")) {
+        node = new net.rptools.parser.tree.ConstantNode(true);
+      } else {
+        node = new net.rptools.parser.tree.ConstantNode(false);
+      }
+    }
     | Number { 
         node = new net.rptools.parser.tree.ConstantNode(Double.parseDouble($Number.toString())); 
       }

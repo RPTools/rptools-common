@@ -438,6 +438,9 @@ public class ExpressionEvaluatorTest {
             dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, greaterThan:2, lessThan:10)").evaluateNext();
             System.out.println("> + < = " + dv);
 
+            dv = ScriptEvaluator.getInstance("true; false").evaluateNext();
+            System.out.println(dv);
+
 
         } catch (Exception e) {
             e.printStackTrace();

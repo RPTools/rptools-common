@@ -55,7 +55,10 @@ class ConstantNode implements ScriptTreeNode {
 
 		value = DataValueFactory.stringValue(val);
 	}
-	
+
+    public ConstantNode(boolean val) {
+        value = DataValueFactory.booleanValue(val);
+    }
 	@Override
 	public DataValue evaluate(ScriptContext context) {
 		return value;
