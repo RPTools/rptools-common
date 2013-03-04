@@ -183,4 +183,9 @@ public class BooleanDataValue implements DataValue {
     public DataValue asBooleanValue() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return dataType().toString() + ": " + value;
+    }
 }

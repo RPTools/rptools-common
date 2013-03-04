@@ -438,7 +438,29 @@ public class ExpressionEvaluatorTest {
             dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, greaterThan:2, lessThan:10)").evaluateNext();
             System.out.println("> + < = " + dv);
 
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, lessThan:10, greaterThan:2)").evaluateNext();
+            System.out.println("< + > = " + dv);
+
+
             dv = ScriptEvaluator.getInstance("true; false").evaluateNext();
+            System.out.println(dv);
+
+
+            dv = ScriptEvaluator.getInstance("rollSomeDice(2,6)").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("rollSomeDice(2, sides: 6)").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("rollSomeDice(num: 2, sides: 6)").evaluateNext();
+            System.out.println(dv);
+
+
+            dv = ScriptEvaluator.getInstance("rollSomeDice(sides: 6, num: 2)").evaluateNext();
+            System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("rollSomeDice(sides: 6)").evaluateNext();
             System.out.println(dv);
 
 

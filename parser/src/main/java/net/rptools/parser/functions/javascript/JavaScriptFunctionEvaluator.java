@@ -328,7 +328,6 @@ public class JavaScriptFunctionEvaluator {
      *
      */
     private DataValue convertToResult(Scriptable scope, Object o) {
-        System.out.println("Result type = " + o.getClass());
         NativeObject no = (NativeObject)o;
 
         Map<String, Object> vals = new HashMap<>();
@@ -432,10 +431,9 @@ public class JavaScriptFunctionEvaluator {
                         fdb.addParameter(paramName, paramType);
                     }
                 }
-
-                JavaScriptFunction jsf = new JavaScriptFunction(ef.getJsFunctionName(), fdb.toFunctionDefinition());
-                functions.add(jsf);
             }
+            JavaScriptFunction jsf = new JavaScriptFunction(ef.getJsFunctionName(), fdb.toFunctionDefinition());
+            functions.add(jsf);
         }
 
         return functions;

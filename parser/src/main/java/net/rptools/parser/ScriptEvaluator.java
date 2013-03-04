@@ -191,8 +191,7 @@ public class ScriptEvaluator  {
 			ScriptTreeNode scriptNode = walker.evaluator();
 
 			results = scriptNode.evaluate(scriptContext);
-
-			index++;
+            index++;
 		} catch (RecognitionException e) {
 			// TODO: log?
 			throw new ParserException(e.getLocalizedMessage(), e);

@@ -167,7 +167,21 @@ final class ListDataValue implements DataValue {
 
 	@Override
 	public String toString() {
-		return dataType().toString() + ": " + asString();
+        StringBuilder sb = new StringBuilder();
+        sb.append(dataType().toString());
+        sb.append(" ");
+        sb.append("[ ");
+        boolean first = true;
+        for (DataValue dv : value) {
+            if (first == false) {
+                sb.append(", ");
+            } else {
+                first = false;
+            }
+            sb.append(dv.toString());
+        }
+        sb.append(" ]");
+        return sb.toString();
 	}
 
 	@Override

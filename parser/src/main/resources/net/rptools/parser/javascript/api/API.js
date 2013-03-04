@@ -26,7 +26,16 @@ delete f2;
 var f3 = new ExportedFunction("showResult", ExportedFunction.DATA_TYPE_STRING, "doShowResult");
 f3.addParameter("res", ExportedFunction.DATA_TYPE_RESULT);
 f3.export();
-//delete f3;
+delete f3;
+
+
+
+var rollFunc = new ExportedFunction("rollSomeDice", ExportedFunction.DATA_TYPE_RESULT, "doRollSomeDice");
+rollFunc.addParameter("num", ExportedFunction.DATA_TYPE_LONG, 1);
+rollFunc.addParameter("sides", ExportedFunction.DATA_TYPE_LONG);
+rollFunc.export();
+delete rollFunc;
+
 
 function doListSumR(args) {
     var val = 0;
@@ -62,4 +71,38 @@ function doShowResult(args) {
     return "Result found: value = " + args.res.getValue()  +
            ", details = " + args.res.getDetails() +
            ", individual = " + args.res.getIndividualValues();
+}
+
+function rand(max) {
+    return Math.floor(Math.random() * max) + 1;
+}
+
+function arrayAsString(arr, delim) {
+    var str = "";
+    for (x in arr) {
+        if (str == "") {
+            str = arr[x];
+        } else {
+            str = str + delim + arr[x];
+        }
+    }
+    return str;
+}
+
+function doRollSomeDice(args) {
+    var times = args.num;
+    var sides = args.sides;
+
+    var res = 0;
+    var ivals = [];
+    while (times--) {
+        var roll = rand(sides);
+        res += roll;
+        ivals.push(roll);
+    }
+
+    var details = arrayAsString(ivals, " + ");
+
+    //return new Result().setValue(res).setDetails(details).setIndividualValues(ivals);
+    return { value: res, details: details, individual: ivals };
 }
