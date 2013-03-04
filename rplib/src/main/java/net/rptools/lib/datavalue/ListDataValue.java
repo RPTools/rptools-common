@@ -65,14 +65,12 @@ final class ListDataValue implements DataValue {
 
 	@Override
 	public long asLong() {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+		throw new NumberFormatException("Can not convert list to a numeric value");
 	}
 
 	@Override
 	public double asDouble() {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+		throw new NumberFormatException("Can not convert list to a numeric value");
 	}
 
 	@Override
@@ -82,59 +80,37 @@ final class ListDataValue implements DataValue {
 
 	@Override
 	public DataValue add(DataValue val) {
-		List<DataValue> l1 = asList();
-		List<DataValue> l2 = val.asList();
-		List<DataValue> newLst = new ArrayList<>(l1.size() + l2.size());
-		newLst.addAll(l1);
-		newLst.addAll(l2);
-
-		return DataValueFactory.listValue(newLst);
+        return DataValueOperations.add(this, val);
 	}
 
 	@Override
 	public DataValue subtract(DataValue val) {
-		if (val.dataType() != DataType.LIST) {
-			throw new NumberFormatException(
-					"Can not convert list to a numeric value");
-		}
-
-		List<DataValue> l1 = asList();
-		List<DataValue> l2 = val.asList();
-		List<DataValue> newLst = new ArrayList<>();
-		newLst.addAll(l1);
-		newLst.removeAll(l2);
-
-		return DataValueFactory.listValue(newLst);
+        return DataValueOperations.subtract(this, val);
 	}
 
 	@Override
 	public DataValue multiply(DataValue val) {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+        return DataValueOperations.multiply(this, val);
 	}
 
 	@Override
 	public DataValue divide(DataValue val) {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+        return DataValueOperations.divide(this, val);
 	}
 
 	@Override
 	public DataValue remainder(DataValue val) {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+        return DataValueOperations.remainder(this, val);
 	}
 
 	@Override
 	public DataValue power(DataValue exp) {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+        return DataValueOperations.power(this, exp);
 	}
 
 	@Override
 	public DataValue negate() {
-		throw new NumberFormatException(
-				"Can not convert list to a numeric value");
+		throw new UnsupportedOperationException("Can not convert list to a numeric value");
 	}
 
 	@Override

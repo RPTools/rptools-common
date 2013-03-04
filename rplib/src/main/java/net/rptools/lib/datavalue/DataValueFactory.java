@@ -111,7 +111,20 @@ public final class DataValueFactory {
 	public static DataValue resultValue(Map<String, DataValue> vals) {
 		return new DictionaryDataValue(vals).asResultValue();
 	}
-	
+
+
+    /**
+     * Returns a boolean DataValue.
+     *
+     * @param val The boolean value to represent.
+     *
+     * @return the DataValue.
+     */
+    public static DataValue booleanValue(boolean val) {
+        return BooleanDataValue.getBooleanDataValue(val);
+    }
+
+
 	/**
 	 * Creates a {@link DataValue} based on the passed in DataValue with a
 	 * {@link DataLabel} attached.
@@ -175,5 +188,15 @@ public final class DataValueFactory {
 		
 		return listValue(lst);
 	}
+
+
+    /**
+     * Returns a NullDataValue instance.
+     *
+     * @return a NullDataValue.
+     */
+    public static DataValue nullDataValue() {
+        return NullDataValue.getInstance();
+    }
 	
 }

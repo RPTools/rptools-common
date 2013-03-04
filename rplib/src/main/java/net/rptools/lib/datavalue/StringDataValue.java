@@ -63,68 +63,38 @@ final class StringDataValue implements DataValue {
 
 	@Override
 	public DataValue add(DataValue val) {
-		return DataValueFactory.stringValue(asString() + val.asString());
+        return DataValueOperations.add(this, val);
 	}
 
 	@Override
 	public DataValue subtract(DataValue val) {
-		if (val.dataType() != DataType.STRING) {
-			throw new NumberFormatException("Can not convert string to a numeric value");
-		}
-		return DataValueFactory.stringValue(asString().replace(val.asString(), ""));
+        return DataValueOperations.subtract(this, val);
 	}
 
 
 	@Override
 	public DataValue multiply(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				final String s = asString();
-				final long times = val.asLong();
-				final StringBuilder sb = new StringBuilder(s.length() * (int)times);
-				for (long i = 0; i < times; i++) {
-					sb.append(s);
-				}
-				newDataVal = DataValueFactory.stringValue(sb.toString());
-				break;
-			case DOUBLE:
-				final String s1 = 	asString();
-				final long times1 = val.asLong();
-				final StringBuilder sb1 = new StringBuilder(s1.length() * (int)times1);
-				for (long i = 0; i < times1; i++) {
-					sb1.append(s1);
-				}
-				newDataVal = DataValueFactory.stringValue(sb1.toString());
-				break;
-			case STRING:
-				throw new NumberFormatException("Can not convert string to a numeric value");
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;	
+        return DataValueOperations.multiply(this, val);
 	}
 
 	@Override
 	public DataValue divide(DataValue val) {
-		throw new NumberFormatException("Can not convert string to a numeric value");
+        return DataValueOperations.divide(this, val);
 	}
 
 	@Override
 	public DataValue remainder(DataValue val) {
-		throw new NumberFormatException("Can not convert string to a numeric value");
+        return DataValueOperations.remainder(this, val);
 	}
 
 	@Override
 	public DataValue power(DataValue exp) {
-		throw new NumberFormatException("Can not convert string to a numeric value");
+        return DataValueOperations.power(this, exp);
 	}	
 	
 	@Override
 	public DataValue negate() {
-		throw new NumberFormatException("Can not convert string to a numeric value");
+		throw new UnsupportedOperationException("Can not convert string to a numeric value");
 	}
 
 

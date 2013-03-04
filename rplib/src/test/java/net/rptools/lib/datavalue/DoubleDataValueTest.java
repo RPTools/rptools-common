@@ -245,7 +245,7 @@ public class DoubleDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractString() {
 		final double l1 = random.nextDouble();
 		final String s2 = "test";
@@ -274,7 +274,7 @@ public class DoubleDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideString() {
 		final double d1 = random.nextDouble();
 		final String s2 = "1";
@@ -283,7 +283,7 @@ public class DoubleDataValueTest {
 		dv = dv.divide(new StringDataValue(s2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderString() {
 		final double d1 = random.nextDouble();
 		final String s2 = "1";
@@ -292,7 +292,7 @@ public class DoubleDataValueTest {
 		dv = dv.remainder(new StringDataValue(s2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerString() {
 		final double d1 = random.nextDouble();
 		final String s2 = "1";
@@ -336,7 +336,7 @@ public class DoubleDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractList() {
 		final double d1 = random.nextDouble();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -350,7 +350,7 @@ public class DoubleDataValueTest {
 		dv = dv.subtract(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyList() {
 		final double d1 = random.nextDouble();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -365,7 +365,7 @@ public class DoubleDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideList() {
 		final double d1 = random.nextDouble();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -379,7 +379,7 @@ public class DoubleDataValueTest {
 		dv = dv.divide(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderList() {
 		final double d1 = random.nextDouble();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -393,7 +393,7 @@ public class DoubleDataValueTest {
 		dv = dv.remainder(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerList() {
 		final double d1 = random.nextDouble();
 		final List<DataValue> lst2 = new ArrayList<>();

@@ -49,7 +49,9 @@ public class DictGetFunction implements ScriptFunction {
     private DictGetFunction() {
         functionDefinition = new FunctionDefinitionBuilder().setName("dict.get").setReturnType(DataType.ANY)
                 .addParameter("dict", DataType.DICTIONARY)
-                .addParameter("key", DataType.STRING).toFunctionDefinition();
+                .addParameter("key", DataType.STRING)
+                .addParameter("__default", DataType.ANY, DataValueFactory.nullDataValue())
+                .toFunctionDefinition();
     }
 
 
@@ -62,11 +64,12 @@ public class DictGetFunction implements ScriptFunction {
     public DataValue call(ScriptContext context, Map<String, DataValue> args) throws ScriptFunctionException {
         Map<String, DataValue> dict = args.get("dict").asDictionary();
         String key = args.get("key").asString();
+        DataValue defaultVal = args.get("__default");
 
         if (dict.containsKey(key)) {
             return dict.get(key);
         } else {
-            return DataValueFactory.stringValue("");
+            return defaultVal;
         }
     }
 }

@@ -248,7 +248,7 @@ public class LongDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractString() {
 		final long l1 = random.nextLong();
 		final String s2 = "test";
@@ -277,7 +277,7 @@ public class LongDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideString() {
 		final long l1 = random.nextLong();
 		final String s2 = "1";
@@ -286,7 +286,7 @@ public class LongDataValueTest {
 		dv = dv.divide(new StringDataValue(s2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderString() {
 		final long l1 = random.nextLong();
 		final String s2 = "1";
@@ -295,7 +295,7 @@ public class LongDataValueTest {
 		dv = dv.remainder(new StringDataValue(s2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerString() {
 		final long l1 = random.nextLong();
 		final String s2 = "1";
@@ -339,7 +339,7 @@ public class LongDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractList() {
 		final long l1 = random.nextLong();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -353,7 +353,7 @@ public class LongDataValueTest {
 		dv = dv.subtract(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyList() {
 		final long l1 = random.nextLong();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -368,7 +368,7 @@ public class LongDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideList() {
 		final long l1 = random.nextLong();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -382,7 +382,7 @@ public class LongDataValueTest {
 		dv = dv.divide(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderList() {
 		final long l1 = random.nextLong();
 		final List<DataValue> lst2 = new ArrayList<>();
@@ -396,7 +396,7 @@ public class LongDataValueTest {
 		dv = dv.remainder(new ListDataValue(lst2));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerList() {
 		final long l1 = random.nextLong();
 		final List<DataValue> lst2 = new ArrayList<>();

@@ -20,6 +20,10 @@ import net.rptools.parser.functions.FunctionDefinitionBuilder;
 
 import java.util.*;
 
+/**
+ * Class used for JavaScript API call to export JavaScript functions.
+ *
+ */
 public class ExportJS {
 
     /** The temporary list of exported functions */
@@ -30,14 +34,32 @@ public class ExportJS {
     }
 
 
+    /**
+     * Clear the currently exported functions. This should be run before calling a new JavaScript
+     * script so that you can record which functions were defined in this script.
+     */
     public static void clearExportedFunctions() {
         exportedFunctions.clear();
     }
 
+    /**
+     * Returns the exported functions since the last {@code clearExportedFunctions()} call.
+     *
+     * @return the exported functions.
+     */
     public static Collection<ExportedFunction> getExportedFunctions() {
         return Collections.unmodifiableCollection(exportedFunctions);
     }
 
+    /**
+     * Callback to export a JavaScript function.
+     *
+     * @param name The name of the scripting language function.
+     * @param params The parameter list for the function.
+     * @param returnType The return type of the function.
+     * @param jsFunctionName The name of the JavaScript function.
+     * @param perm The default permissions required to run the function.
+     */
     public static void exportFunction(String name, Object params, String returnType,
                                       String jsFunctionName, String perm) {
 

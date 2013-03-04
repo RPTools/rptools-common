@@ -174,22 +174,38 @@ final class LabeledDataValue implements DataValue {
 
 	@Override
 	public DataValue asLongValue() {
-		return DataValueFactory.longValue(asLong());
+        if (dataType() == DataType.LONG) {
+            return this;
+        } else {
+            return value.asLongValue();
+        }
 	}
 
 	@Override
 	public DataValue asDoubleValue() {
-		return DataValueFactory.doubleValue(asLong());
+        if (dataType() == DataType.DOUBLE) {
+            return this;
+        } else {
+		    return value.asDoubleValue();
+        }
 	}
 
 	@Override
 	public DataValue asStringValue() {
-		return DataValueFactory.stringValue(asString());
+        if (dataType() == DataType.STRING) {
+            return this;
+        } else {
+            return  value.asStringValue();
+        }
 	}
 
 	@Override
 	public DataValue asListValue() {
-		return DataValueFactory.listValue(asList());
+        if (dataType() == DataType.LIST) {
+            return this;
+        } else {
+            return value.asListValue();
+        }
 	}
 
 	@Override
@@ -199,7 +215,11 @@ final class LabeledDataValue implements DataValue {
 
 	@Override
 	public DataValue asDictionaryValue() {
-		return DataValueFactory.dictionaryValue(asDictionary());
+        if (dataType() == DataType.DICTIONARY) {
+            return this;
+        } else {
+            return value.asDictionaryValue();
+        }
 	}
 
 	@Override
@@ -207,9 +227,27 @@ final class LabeledDataValue implements DataValue {
 		return value.asResult();
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return value.asBoolean();
+    }
+
+    @Override
 	public DataValue asResultValue() {
-		return DataValueFactory.resultValue(asResult());
+        if (dataType() == DataType.RESULT) {
+            return this;
+        } else {
+            return value.asResultValue();
+        }
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        if (dataType() == DataType.BOOLEAN) {
+            return this;
+        } else {
+            return value.asBooleanValue();
+        }
+    }
 
 }

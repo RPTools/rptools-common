@@ -63,136 +63,33 @@ final class DoubleDataValue implements DataValue {
 
 	@Override
 	public DataValue add(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(asDouble() + val.asLong());
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(asDouble() + val.asDouble());
-				break;
-			case STRING:
-				newDataVal = DataValueFactory.stringValue(asString() + val.asString());
-				break;
-			case LIST:
-				List<? extends DataValue> l1 = asList();
-				List<? extends DataValue> l2 = val.asList();
-				List<DataValue> lst = new ArrayList<DataValue>(l1.size() + l2.size());
-				lst.addAll(l1);
-				lst.addAll(l2);
-				newDataVal = DataValueFactory.listValue(lst);
-				break;
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;
+        return DataValueOperations.add(this, val);
 	}
 
 	@Override
 	public DataValue subtract(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(asDouble() - val.asDouble());
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(asDouble() - val.asDouble());
-				break;
-			case STRING:
-				throw new NumberFormatException("Can not convert string to a numeric value");
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;
+        return DataValueOperations.subtract(this, val);
 	}
 
 
 	@Override
 	public DataValue multiply(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(asDouble() * val.asDouble());
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(asDouble() * val.asDouble());
-				break;
-			case STRING:
-				String s = val.asString();
-				StringBuilder sb = new StringBuilder(s.length());
-				for (long i = 0, times = (long) asLong(); i < times; i++) {
-					sb.append(s);
-				}
-				newDataVal = DataValueFactory.stringValue(sb.toString());
-				break;
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;	
+        return DataValueOperations.multiply(this, val);
 	}
 
 	@Override
 	public DataValue divide(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(asDouble() / val.asDouble());
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(asDouble() / val.asDouble());
-				break;
-			case STRING:
-				throw new NumberFormatException("Can not convert string to a numeric value");
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;	
+        return DataValueOperations.divide(this, val);
 	}
 
 	@Override
 	public DataValue remainder(DataValue val) {
-		DataValue newDataVal = null;
-		switch (val.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(asDouble() % val.asDouble());
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(asDouble() % val.asDouble());
-				break;
-			case STRING:
-				throw new NumberFormatException("Can not convert string to a numeric value");
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;	
+        return DataValueOperations.remainder(this, val);
 	}
 
 	@Override
 	public DataValue power(DataValue exp) {
-		DataValue newDataVal = null;
-		switch (exp.dataType()) {
-			case LONG:
-				newDataVal = DataValueFactory.doubleValue(Math.pow(asDouble(), exp.asDouble()));
-				break;
-			case DOUBLE:
-				newDataVal = DataValueFactory.doubleValue(Math.pow(asDouble(), exp.asDouble()));
-				break;
-			case STRING:
-				throw new NumberFormatException("Can not convert string to a numeric value");
-			case LIST:
-				throw new NumberFormatException("Can not convert list to a numeric value");
-			case DICTIONARY:
-				throw new NumberFormatException("Can not convert dictionary to a numeric value");
-		}
-		return newDataVal;	
+        return DataValueOperations.power(this, exp);
 	}	
 	
 	@Override
@@ -288,8 +185,18 @@ final class DoubleDataValue implements DataValue {
 		return new ResultBuilder().setValue(this).toResult();
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return value != 0.0;
+    }
+
+    @Override
 	public DataValue asResultValue() {
 		return DataValueFactory.resultValue(asResult());
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        return DataValueFactory.booleanValue(asBoolean());
+    }
 }

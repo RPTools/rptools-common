@@ -79,34 +79,34 @@ final class DictionaryDataValue implements DataValue {
 
 	@Override
 	public DataValue add(DataValue val) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
+        return DataValueOperations.add(this, val);
 	}
 
 	@Override
 	public DataValue subtract(DataValue val) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
+        return DataValueOperations.subtract(this, val);
 	}
 
 
 	@Override
 	public DataValue multiply(DataValue val) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
+        return DataValueOperations.multiply(this, val);
 	}
 
 	@Override
 	public DataValue divide(DataValue val) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
+        return DataValueOperations.divide(this, val);
 	}
 
 	@Override
 	public DataValue remainder(DataValue val) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
+        return DataValueOperations.remainder(this, val);
 	}
 
 	@Override
 	public DataValue power(DataValue exp) {
-		throw new UnsupportedOperationException("Mathematical operations not supported on dictionaries.");
-	}	
+        return DataValueOperations.power(this, exp);
+	}
 	
 	@Override
 	public DataValue negate() {
@@ -200,10 +200,20 @@ final class DictionaryDataValue implements DataValue {
 		return new ResultBuilder().setValue(this).toResult();
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return values.isEmpty() == false;
+    }
+
+    @Override
 	public DataValue asResultValue() {
 		return DataValueFactory.resultValue(asResult());
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        return DataValueFactory.booleanValue(asBoolean());
+    }
 
 
 }

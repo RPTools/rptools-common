@@ -107,6 +107,15 @@ public interface DataValue {
 	 */
 	public Result asResult();
 
+
+    /**
+     * Returns the value as a boolean. For numeric values a non zero value will be true, zero false,
+     * for strings, lists and dictionaries, an empty string, list, or dictionary is false, any other
+     * value is true. A NullDataValue is always false.
+     *
+     * @return a boolean
+     */
+    public boolean asBoolean();
 	
 	/**
 	 * Returns the result of a second DataValue added to this DataValue.
@@ -115,8 +124,7 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
-	 * @throws UnsupportedOperationException if addition is not supported on either value.
+\	 * @throws UnsupportedOperationException if addition is not supported on either value.
 	 */
 	public DataValue add(DataValue val);
 
@@ -127,8 +135,7 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
-	 * @throws UnsupportedOperationException if subtraction is not supported on either value.
+\	 * @throws UnsupportedOperationException if subtraction is not supported on either value.
 	 * 
 	 */	
 	public DataValue subtract(DataValue val);
@@ -140,7 +147,6 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
 	 * @throws UnsupportedOperationException if multiplication is not supported on either value.
 	 * 
 	 */	
@@ -153,7 +159,6 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
 	 * @throws UnsupportedOperationException if division is not supported on either value.
 	 * 
 	 */	
@@ -166,7 +171,6 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
 	 * @throws UnsupportedOperationException if division is not supported on either value.
 	 * 
 	 */	
@@ -179,7 +183,6 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
 	 * @throws UnsupportedOperationException if exponentiation is not supported on either value.
 	 * 
 	 */	
@@ -190,7 +193,6 @@ public interface DataValue {
 	 * 
 	 * @return a new DataValue with the result.
 	 * 
-	 * @throws NumberFormatException if either value can not be converted to a number.
 	 * @throws UnsupportedOperationException if negation is not supported on either value.
 	 * 
 	 */	
@@ -290,5 +292,12 @@ public interface DataValue {
 	 *         
 	 */	
 	public DataValue asResultValue();
-	
+
+    /**
+     * Returns the DataValue coerced to a boolean data value.
+     * @see #asBoolean() for how different types are converted.
+     *
+     * @return a boolean DataValue
+     */
+    public DataValue asBooleanValue();
 }

@@ -185,6 +185,10 @@ rptools.convertDataValue = function(dv) {
 
        return new Result(val, det, indiv);
 
+    } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.BOOLEAN) {
+        return dv.asBoolean();
+    } else if (dv.dataType() == net.rptoold.lib.datavalue.DataType.NULL) {
+        return null;
     } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.LONG) {
         return dv.asLong();
     } else if (dv.dataType() == net.rptools.lib.datavalue.DataType.DOUBLE) {
@@ -328,8 +332,12 @@ ExportedFunction.DATA_TYPE_STRING = net.rptools.lib.datavalue.DataType.STRING.to
 ExportedFunction.DATA_TYPE_LIST = net.rptools.lib.datavalue.DataType.LIST.toString();
 // Dictionary (maps values to a string) type.
 ExportedFunction.DATA_TYPE_DICT = net.rptools.lib.datavalue.DataType.DICTIONARY.toString();
+// Boolean data type.
+ExportedFunction.DATA_TYPE_BOOLEAN = net.rptools.lib.datavalue.DataType.BOOLEAN.toString();
 // Result type.
 ExportedFunction.DATA_TYPE_RESULT = net.rptools.lib.datavalue.DataType.RESULT.toString();
+// Null value.
+ExportedFunction.DATA_TYPE_NULL = net.rptools.lib.datavalue.DataType.NULL.toString();
 // Variable arguments list type. Used for a variable amount of positional parameters.
 ExportedFunction.DATA_TYPE_LIST_VARARGS = "List*";
 // Variable arguments dictionary type. Used for a variable amount of named parameters.

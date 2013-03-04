@@ -106,33 +106,33 @@ public class ListDataValueTest {
 		}
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractLong() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new LongDataValue(1));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyLong() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.multiply(new LongDataValue(1));
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideLong() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.divide(new LongDataValue(1));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderLong() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.remainder(new LongDataValue(1));
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerLong() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.power(new LongDataValue(1));
@@ -155,33 +155,33 @@ public class ListDataValueTest {
 		}	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractDouble() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new DoubleDataValue(1.0));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyDouble() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.multiply(new DoubleDataValue(1.0));
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideDobule() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new DoubleDataValue(1.0));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderDouble() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new DoubleDataValue(1.0));
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerDouble() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new DoubleDataValue(1.0));
@@ -203,32 +203,32 @@ public class ListDataValueTest {
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void subtractString() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.subtract(new StringDataValue("1"));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyString() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.multiply(new StringDataValue("1"));
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideString() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.divide(new StringDataValue("1"));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderString() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.remainder(new StringDataValue("1"));
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerString() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.power(new StringDataValue("1"));
@@ -313,33 +313,33 @@ public class ListDataValueTest {
 	}
 
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void multiplyList() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.multiply(dv);
 	}
 	
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void divideList() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.divide(dv);
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void remainderList() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.remainder(dv);
 	}
 	
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void powerList() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.power(dv);
 	}
 
 
-	@Test(expected=NumberFormatException.class)
+	@Test(expected=UnsupportedOperationException.class)
 	public void negate() {
 		final DataValue dv = new ListDataValue(generateList());
 		dv.negate();			

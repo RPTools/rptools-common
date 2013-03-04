@@ -65,7 +65,11 @@ public class ResultBuilder {
 		value = DataValueFactory.longValue(val);
 		return this;
 	}
-	
+
+    public ResultBuilder setBooleanValue(boolean val) {
+        value = DataValueFactory.booleanValue(val);
+        return this;
+    }
 	
 	/**
 	 * Sets the double value for the {@link Result} that this will create.

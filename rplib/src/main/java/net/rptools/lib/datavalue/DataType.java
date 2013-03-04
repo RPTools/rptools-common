@@ -32,13 +32,19 @@ public enum DataType {
 	DICTIONARY	{ public DataValue coerce(DataValue val) {return val.asDictionaryValue();} },
 	/** Result script values. */
 	RESULT 		{ public DataValue coerce(DataValue val) {return val.asResultValue();} },
-	/** 
+    /** Boolean script values. */
+    BOOLEAN     { public DataValue coerce(DataValue val) {return val.asBooleanValue();} },
+	/**
 	 * Any data pseudo data type, this is not a type supported by the script but an
 	 * indication that any data type is valid. There is no object that can be instantiated
 	 * with this type. Attempting to coerce any DataValue to this type will return the 
 	 * DataValue you attempted to coerce as by definition its already the type wanted.
 	 */
-	ANY 		{ public DataValue coerce(DataValue val) {return val; } };
+	ANY 		{ public DataValue coerce(DataValue val) {return val; } },
+    NULL        { public DataValue coerce(DataValue val) {return DataValueFactory.nullDataValue();} }
+    ;
+
+
 	/** Capitalized printable name for the type. */
 	private final String capatalized;
 	

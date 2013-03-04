@@ -183,6 +183,12 @@ public class JavaScriptFunctionEvaluator {
                 case RESULT:
                     result = convertToResult(scope, oresult);
                     break;
+                case BOOLEAN:
+                    result = convertToBoolean(oresult);
+                    break;
+                case NULL:
+                    result = DataValueFactory.nullDataValue();
+                    break;
                 default:
                     throw new ScriptFunctionException("Invalid return type for function " + returnType);
             }
@@ -198,6 +204,18 @@ public class JavaScriptFunctionEvaluator {
         return result;
     }
 
+    /**
+     * Returns the {@link DataValue} of type {@link DataType#BOOLEAN} representation of the object.
+     *
+     * @param o The object to convert.
+     *
+     * @return the {@link DataValue}.
+     */
+    private DataValue convertToBoolean(Object o) {
+        Boolean val = (Boolean)Context.jsToJava(o, boolean.class);
+        return DataValueFactory.booleanValue(val.booleanValue());
+    }
+
 
     /**
      * Returns the {@link DataValue} of type {@link DataType#LONG} representation of the object.
@@ -209,7 +227,7 @@ public class JavaScriptFunctionEvaluator {
      */
     private DataValue convertToLongValue(Object o) {
         Long val = (Long)Context.jsToJava(o, long.class);
-        return DataValueFactory.longValue(val);
+        return DataValueFactory.longValue(val.longValue());
     }
 
     /**
@@ -222,7 +240,7 @@ public class JavaScriptFunctionEvaluator {
      */
     private DataValue convertToDoubleValue(Object o) {
         Double val = (Double)Context.jsToJava(o, double.class);
-        return DataValueFactory.doubleValue(val);
+        return DataValueFactory.doubleValue(val.doubleValue());
     }
 
     /**

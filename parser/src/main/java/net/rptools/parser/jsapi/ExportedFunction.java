@@ -34,7 +34,7 @@ public class ExportedFunction {
     private final String jsFunctionName;
 
     /** The default player permission level required to execute the function. */
-    private final PermissionLevel defaiultPermissionLevel;
+    private final PermissionLevel defaultPermissionLevel;
 
     /**
      * Creates a new ExportedFunction.
@@ -73,7 +73,7 @@ public class ExportedFunction {
         returnType = rType;
         paramList = params;
         jsFunctionName = jsFuncName;
-        defaiultPermissionLevel = perms;
+        defaultPermissionLevel = perms;
     }
 
 
@@ -119,6 +119,6 @@ public class ExportedFunction {
      * @return the default permission level.
      */
     public PermissionLevel getDefaultPermissionLevel() {
-        return defaiultPermissionLevel;
+        return defaultPermissionLevel;
     }
 }
