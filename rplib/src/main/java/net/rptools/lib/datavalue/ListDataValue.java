@@ -205,9 +205,19 @@ final class ListDataValue implements DataValue {
 		return new ResultBuilder().setValue(this).toResult();
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return value.size() != 0;
+    }
+
+    @Override
 	public DataValue asResultValue() {
 		return DataValueFactory.resultValue(asResult());
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        return DataValueFactory.booleanValue(asBoolean());
+    }
 
 }

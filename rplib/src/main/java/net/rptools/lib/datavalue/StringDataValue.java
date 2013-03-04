@@ -188,10 +188,20 @@ final class StringDataValue implements DataValue {
 		return new ResultBuilder().setValue(this).toResult();
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return value.isEmpty() == false;
+    }
+
+    @Override
 	public DataValue asResultValue() {
 		return DataValueFactory.resultValue(asResult());
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        return DataValueFactory.booleanValue(asBoolean());
+    }
 
 
 }

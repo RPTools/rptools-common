@@ -136,22 +136,22 @@ final class ResultDataValue implements DataValue {
 
 	@Override
 	public DataValue asLongValue() {
-		return DataValueFactory.longValue(asLong());
+		return result.getValue().asLongValue();
 	}
 
 	@Override
 	public DataValue asDoubleValue() {
-		return DataValueFactory.doubleValue(asLong());
+		return result.getValue().asDoubleValue();
 	}
 
 	@Override
 	public DataValue asStringValue() {
-		return DataValueFactory.stringValue(asString());
+		return result.getValue().asStringValue();
 	}
 
 	@Override
 	public DataValue asListValue() {
-		return DataValueFactory.listValue(asList());
+        return result.getValue().asListValue();
 	}
 	
 	
@@ -189,7 +189,7 @@ final class ResultDataValue implements DataValue {
 
 	@Override
 	public DataValue asDictionaryValue() {
-		return DataValueFactory.dictionaryValue(asDictionary());
+        return result.getValue().asDictionaryValue();
 	}
 
 	@Override
@@ -197,9 +197,19 @@ final class ResultDataValue implements DataValue {
 		return result;
 	}
 
-	@Override
+    @Override
+    public boolean asBoolean() {
+        return result.getValue().asBoolean();
+    }
+
+    @Override
 	public DataValue asResultValue() {
 		return this;
 	}
+
+    @Override
+    public DataValue asBooleanValue() {
+        return asResult().getValue().asBooleanValue();
+    }
 
 }
