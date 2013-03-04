@@ -77,6 +77,11 @@ public class NullDataValue implements DataValue {
     }
 
     @Override
+    public boolean asBoolean() {
+        return false;
+    }
+
+    @Override
     public DataValue add(DataValue val) {
         return DataValueOperations.add(this, val);
     }
@@ -123,31 +128,36 @@ public class NullDataValue implements DataValue {
 
     @Override
     public DataValue asLongValue() {
-        return DataValueFactory.longValue(asLong());
+        return this;
     }
 
     @Override
     public DataValue asDoubleValue() {
-        return DataValueFactory.doubleValue(asDouble());
+        return this;
     }
 
     @Override
     public DataValue asStringValue() {
-        return DataValueFactory.stringValue(asString());
+        return this;
     }
 
     @Override
     public DataValue asListValue() {
-        return DataValueFactory.listValue(asList());
+        return this;
     }
 
     @Override
     public DataValue asDictionaryValue() {
-        return DataValueFactory.dictionaryValue(asDictionary());
+        return this;
     }
 
     @Override
     public DataValue asResultValue() {
-        return DataValueFactory.resultValue(asResult());
+        return this;
+    }
+
+    @Override
+    public DataValue asBooleanValue() {
+        return this;
     }
 }
