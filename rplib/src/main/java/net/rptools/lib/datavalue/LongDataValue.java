@@ -124,17 +124,25 @@ final class LongDataValue implements DataValue {
 		if (obj == null) {
 			return false;
 		}
-		
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		
-		LongDataValue other = (LongDataValue) obj;
-		if (value != other.value) {
-			return false;
-		}
-		
-		return true;
+
+        if (obj instanceof DataValue)  {
+            DataValue dv = (DataValue) obj;
+            if (dv.dataType() == DataType.LONG) {
+                if (value == dv.asLong()) {
+                    return  true;
+                } else {
+                    return  false;
+                }
+            } else if (dv.dataType() == DataType.DOUBLE) {
+                if (asDouble() == dv.asDouble()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+		return false;
 	}
 
 	@Override

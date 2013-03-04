@@ -122,16 +122,18 @@ final class DoubleDataValue implements DataValue {
 		}
 		if (obj == null) {
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		
-		DoubleDataValue other = (DoubleDataValue) obj;
-		if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value)) {
-			return false;
-		}
-		
+        }
+
+        if (obj instanceof DataValue)  {
+            DataValue dv = (DataValue) obj;
+            if (dv.dataType() == DataType.LONG || dv.dataType() == DataType.DOUBLE) {
+                if (value == dv.asDouble()) {
+                    return  true;
+                } else {
+                    return  false;
+                }
+            }
+        }
 		return true;
 	}
 

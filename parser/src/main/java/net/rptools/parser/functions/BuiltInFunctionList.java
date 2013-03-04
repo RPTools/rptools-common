@@ -23,11 +23,7 @@ import net.rptools.parser.functions.dictionary.DictFunction;
 import net.rptools.parser.functions.dictionary.DictGetFunction;
 import net.rptools.parser.functions.dictionary.DictRemoveFunction;
 import net.rptools.parser.functions.dictionary.DictSetFunction;
-import net.rptools.parser.functions.list.ListFunction;
-import net.rptools.parser.functions.list.ListIntersectionFunction;
-import net.rptools.parser.functions.list.ListMinusFunction;
-import net.rptools.parser.functions.list.ListShuffleFunction;
-import net.rptools.parser.functions.list.ListUnionFunction;
+import net.rptools.parser.functions.list.*;
 
 /**
  * Contains a list of the functions that should be loaded as built in functions.
@@ -71,6 +67,9 @@ public class BuiltInFunctionList {
         addBuiltInFunction(DictSetFunction.getDictSetFunction());
         addBuiltInFunction(DictGetFunction.getDictGetFunction());
         addBuiltInFunction(DictRemoveFunction.getDictRemoveFunction());
+        addBuiltInFunction(ListCountFunction.listCountFunction());
+        addBuiltInFunction(new FunctionAlias("list.count", ListCountFunction.listCountFunction()));
+
     }
 	/**
 	 * Adds a function to the list of the built in functions.

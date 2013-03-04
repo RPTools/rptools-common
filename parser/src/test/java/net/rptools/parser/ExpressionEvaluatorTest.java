@@ -161,7 +161,11 @@ public class ExpressionEvaluatorTest {
 		DataValue dv = ScriptEvaluator.getInstance("list(1, 3, 5)").evaluateNext();
 
 		assertEquals(dv.dataType(), DataType.LIST);
-		assertEquals(3, dv.asList().size());
+        assertEquals(1, dv.asList().size());
+
+        dv = dv.asList().get(0);
+
+        assertEquals(3, dv.asList().size());
 		assertEquals(DataType.LONG, dv.asList().get(0).dataType());
 		assertEquals(1, dv.asList().get(0).asLong());
 		assertEquals(DataType.LONG, dv.asList().get(1).dataType());
@@ -174,15 +178,25 @@ public class ExpressionEvaluatorTest {
 		DataValue dv = ScriptEvaluator.getInstance("list()").evaluateNext();
 
 		assertEquals(dv.dataType(), DataType.LIST);
-		assertEquals(0, dv.asList().size());
+
+        assertEquals(1, dv.asList().size());
+
+        dv = dv.asList().get(0);
+
+        assertEquals(0, dv.asList().size());
 	}
 
 	@Test public void listValueAlias() throws ExpressionEvaluatorException {
 		DataValue dv = ScriptEvaluator.getInstance("list.create(1, 3, 5)").evaluateNext();
 
 		assertEquals(dv.dataType(), DataType.LIST);
-		assertEquals(3, dv.asList().size());
-		assertEquals(DataType.LONG, dv.asList().get(0).dataType());
+
+        assertEquals(1, dv.asList().size());
+
+        dv = dv.asList().get(0);
+
+        assertEquals(3, dv.asList().size());
+        assertEquals(DataType.LONG, dv.asList().get(0).dataType());
 		assertEquals(1, dv.asList().get(0).asLong());
 		assertEquals(DataType.LONG, dv.asList().get(1).dataType());
 		assertEquals(3, dv.asList().get(1).asLong());
@@ -194,7 +208,12 @@ public class ExpressionEvaluatorTest {
 		DataValue dv = ScriptEvaluator.getInstance("list()").evaluateNext();
 
 		assertEquals(dv.dataType(), DataType.LIST);
-		assertEquals(0, dv.asList().size());
+
+        assertEquals(1, dv.asList().size());
+
+        dv = dv.asList().get(0);
+
+        assertEquals(0, dv.asList().size());
 	}
 
 	
@@ -359,7 +378,8 @@ public class ExpressionEvaluatorTest {
 		assertEquals("string1string1string1string1", dv.asList().get(0).asString());					
 	}
 	
-	
+
+    // This needs to be removed but for now its handy for debugging :)
 	@Test public void RemoveMe() throws ExpressionEvaluatorException {
 		try {
 			DataValue dv = ScriptEvaluator.getInstance("list.shuffle(list(3,1,8,9,2,7))").evaluateNext();
@@ -393,6 +413,31 @@ public class ExpressionEvaluatorTest {
 
             dv = ScriptEvaluator.getInstance("$a = dict(v1: 'test', v2: 1, vv: 2.2) ; dict.remove($a, list('v1', 'vv'))").evaluateNext();
             System.out.println(dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a)").evaluateNext();
+            System.out.println("count = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, atLeast:2)").evaluateNext();
+            System.out.println("atLest = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, atMost:2)").evaluateNext();
+            System.out.println("atMost = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, equals:2)").evaluateNext();
+            System.out.println("equals = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, greaterThan:2)").evaluateNext();
+            System.out.println("greaterThan = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, lessThan:2)").evaluateNext();
+            System.out.println("lessThan = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, not:2)").evaluateNext();
+            System.out.println("not = " + dv);
+
+            dv = ScriptEvaluator.getInstance("$a = list(4, 2, 5, 7, 88, -2, 2); count($a, greaterThan:2, lessThan:10)").evaluateNext();
+            System.out.println("> + < = " + dv);
+
 
         } catch (Exception e) {
             e.printStackTrace();

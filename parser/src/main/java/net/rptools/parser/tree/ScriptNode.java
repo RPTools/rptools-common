@@ -44,14 +44,14 @@ class ScriptNode implements ScriptTreeNode {
 	
 	@Override
 	public DataValue evaluate(ScriptContext context) throws ExpressionEvaluatorException {
-		
-		DataValue returnVal = DataValueFactory.listValue(Collections.<DataValue>emptyList());
+
+        List<DataValue> results = new ArrayList<>(statements.size());
 		for (ScriptTreeNode node : statements) {
 			DataValue val = node.evaluate(context);
-			returnVal = returnVal.add(val);			
+            results.add(val);
 		}
 		
-		return returnVal;
+		return DataValueFactory.listValue(results);
 	}
 
 }
