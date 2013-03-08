@@ -26,7 +26,8 @@ import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.result.RollExpression;
 import net.rptools.parser.ExpressionEvaluatorException;
-import net.rptools.parser.functions.DiceRoller;
+import net.rptools.parser.ScriptContext;
+import net.rptools.parser.dice.DiceRoller;
 
 /**
  * SymbolTableImpl the SymbolTable and provides a default implementation that should be 
@@ -67,9 +68,9 @@ class SymbolTableImpl implements SymbolTable {
 		this.promptResolver = promptResolver;
 	}
 
-	/** Temporary Dice Roller will be replace later. */
-	// TODO
-	private final DiceRoller diceRoller = new DiceRoller();
+
+    /** Object used for dice rolling. */
+	private final DiceRoller diceRoller = DiceRoller.getInstance();
 	
 	@Override
 	public boolean containsVariable(String name) {
@@ -172,10 +173,10 @@ class SymbolTableImpl implements SymbolTable {
 		
 
 	@Override
-	public DataValue resolveRoll(String name) {
+	public DataValue resolveRoll(ScriptContext context, String name) throws ExpressionEvaluatorException {
 		RollExpression rexpr = getRollExpression(name);
 		DataValue res;
-		res = diceRoller.roll(rexpr.getRollString(), rexpr.isVerbose());
+		res = diceRoller.roll(context, rexpr);
 		addRollResult(name, res);
 		
 		return res;

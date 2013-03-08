@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 import net.rptools.lib.permissions.PermissionLevel;
 import net.rptools.parser.functions.javascript.JavaScriptFunction;
-import net.rptools.parser.functions.javascript.JavaScriptFunctionEvaluator;
+import net.rptools.parser.functions.javascript.JavaScripEvaluator;
 
 /**
  * Manages the list of function and the permissions required to call the
@@ -35,34 +35,42 @@ import net.rptools.parser.functions.javascript.JavaScriptFunctionEvaluator;
  */
 public class FunctionManager {
 
+
+    private static final FunctionManager INSTANCE = new FunctionManager();
+
 	/** The list of built in functions. */
-	private final static Map<String, ScriptFunction> builtinFunctions = new TreeMap<>();
+	private final Map<String, ScriptFunction> builtinFunctions = new TreeMap<>();
 	
 	/** The list of permissions required to run the function. */
-	private final static Map<ScriptFunction, PermissionLevel> builtinFunctionPermissions = new HashMap<>();
+	private final Map<ScriptFunction, PermissionLevel> builtinFunctionPermissions = new HashMap<>();
 	
 	/** The list of built in functions. */
-	private final static Map<String, ScriptFunction> userFunctions = new TreeMap<>();
+	private final Map<String, ScriptFunction> userFunctions = new TreeMap<>();
 	
 	/** The list of permissions required to run the function. */
-	private final static Map<ScriptFunction, PermissionLevel> userFunctionPermissions = new HashMap<>();
+	private final Map<ScriptFunction, PermissionLevel> userFunctionPermissions = new HashMap<>();
+
+
+    /**
+     * Returns an instance of FunctionManager.
+     *
+     * @return the instance of FunctionManager.
+     */
+    public static FunctionManager getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Creates a new FunctionManager instance.
+     */
+	private FunctionManager() {
+        for (ScriptFunction bif : BuiltInFunctionList.getInstance().getBuiltInFunctions()) {
+            builtinFunctions.put(bif.getDefinition().name(), bif);
+            builtinFunctionPermissions.put(bif, bif.getDefinition().defaultRequiredPermissionLevel());
+        }
+    }
 	
-	
-	/** Stop instantiation. */
-	private FunctionManager(){
-	}
-	
-	
-	/**
-	 * Read in and initialise the built in functions.
-	 */
-	static {
-		for (ScriptFunction bif : BuiltInFunctionList.getInstance().getBuiltInFunctions()) {
-			builtinFunctions.put(bif.getDefinition().name(), bif);
-			builtinFunctionPermissions.put(bif, bif.getDefinition().defaultRequiredPermissionLevel());
-		}
-        init();
-	}
+
 	
 	/**
 	 * Return the built in script function with the specified name.
@@ -73,7 +81,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if functionName is null.
 	 */
-	public static ScriptFunction getBuiltinFunction(String functionName) {
+	public ScriptFunction getBuiltinFunction(String functionName) {
 		if (functionName == null) {
 			throw new NullPointerException("Function name is null");
 		}
@@ -89,7 +97,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if functionName is null.
 	 */
-	public static ScriptFunction getUserFunction(String functionName) {
+	public ScriptFunction getUserFunction(String functionName) {
 		if (functionName == null) {
 			throw new NullPointerException("Function name is null");
 		}
@@ -106,7 +114,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if name is null.
 	 */
-	public static boolean containsBuiltinFunction(String name) {
+	public boolean containsBuiltinFunction(String name) {
 		return builtinFunctions.containsKey(name);
 	}
 	
@@ -119,7 +127,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if name is null.
 	 */	
-	public static boolean containsUserFunction(String name) {
+	public boolean containsUserFunction(String name) {
 		return userFunctions.containsKey(name);
 	}
 	
@@ -130,7 +138,7 @@ public class FunctionManager {
 	 * 
 	 * @return true if the function is defined as a built in function.
 	 */
-	public static boolean isBuiltinFunction(ScriptFunction function) {
+	public boolean isBuiltinFunction(ScriptFunction function) {
 		return builtinFunctionPermissions.containsKey(function);
 	}
 	
@@ -143,7 +151,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if function is null.
 	 */
-	public static PermissionLevel getFunctionPermission(ScriptFunction function) {
+	public PermissionLevel getFunctionPermission(ScriptFunction function) {
 		if (function == null) {
 			throw new NullPointerException("Function is null.");
 		}
@@ -165,7 +173,7 @@ public class FunctionManager {
 	 * @throws IllegalArgumentException if the function exists as built in function
 	 *         or a function with the same name exists as a user defined function.
 	 */
-	public static void definFunction(ScriptFunction function) {
+	public void definFunction(ScriptFunction function) {
 		if (function == null) {
 			throw new NullPointerException("Function is null.");
 		}
@@ -186,7 +194,7 @@ public class FunctionManager {
 	 * 
 	 * @throws NullPointerException if the function is null.
 	 */
-	public static void undefineFunction(ScriptFunction function) {
+	public void undefineFunction(ScriptFunction function) {
 		if (function == null) {
 			throw new NullPointerException("Function is null.");
 		}
@@ -200,7 +208,7 @@ public class FunctionManager {
 	/**
 	 * Removes all the user defined functions.
 	 */
-	public static void undefineAll() {
+	public void undefineAll() {
 		userFunctionPermissions.clear();
 		userFunctions.clear();
 	}
@@ -223,24 +231,5 @@ public class FunctionManager {
 		return Collections.unmodifiableCollection(userFunctions.values());
 	}
 
-    // TODO: temp
-    public static void init() {
-        try {
-            JavaScriptFunctionEvaluator.getInstance().test();
-            URL url = FunctionManager.class.getResource("/net/rptools/parser/javascript/api/API.js");
-            Path p = Paths.get(url.toURI());
-            byte[] bytes = Files.readAllBytes(p);
-            Collection<JavaScriptFunction> funcs =
-                    JavaScriptFunctionEvaluator.getInstance().addJavaScript(Collections.singletonMap("API",
-                            new String(bytes)));
-            for (JavaScriptFunction func : funcs) {
-                definFunction(func);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (ExceptionInInitializerError eie) {
-            eie.printStackTrace();
-            eie.getCause().printStackTrace();
-        }
-    }
+
 }

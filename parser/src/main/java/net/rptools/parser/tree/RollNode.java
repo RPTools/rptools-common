@@ -16,6 +16,7 @@ package net.rptools.parser.tree;
 
 import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.result.RollExpression;
+import net.rptools.parser.ExpressionEvaluatorException;
 import net.rptools.parser.ScriptContext;
 
 /**
@@ -39,26 +40,11 @@ class RollNode implements ScriptTreeNode {
 	
 	
 	@Override
-	public DataValue evaluate(ScriptContext context) {
-        DataValue rollRes = context.getSymbolTable().resolveRoll(rollName);
+	public DataValue evaluate(ScriptContext context) throws ExpressionEvaluatorException {
+        DataValue rollRes = context.getSymbolTable().resolveRoll(context, rollName);
         context.getSymbolTable().addRollResult(rollName, rollRes);
-        		
-        DataValue result = null;
-        
-        // TODO 
-        RollExpression rollExpr = context.getSymbolTable().getRollExpression(rollName);
-        
-        if (rollExpr.isVerbose()) {
-        	if (rollExpr.isSum()) {
-        		result = rollRes;
-        	} else {
-        		result = rollRes.asListValue();
-        	}
-        } else {
-        	result = rollRes;
-        }
-                
-        return result;
+
+        return rollRes;
 	}
 
 }

@@ -19,6 +19,7 @@ import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.datavalue.DataValueFactory;
 import net.rptools.lib.result.ResultBuilder;
 import net.rptools.parser.ScriptContext;
+import net.rptools.parser.dice.JavaScriptDice;
 import net.rptools.parser.functions.FunctionDefinitionBuilder;
 import net.rptools.parser.functions.ScriptFunction;
 import net.rptools.parser.functions.ScriptFunctionException;
@@ -37,7 +38,7 @@ import java.util.*;
 /**
  * Class used to evaluate JavaScript function calls.
  */
-public class JavaScriptFunctionEvaluator {
+public class JavaScripEvaluator {
 
 
     /** The name of the JavaScript function that converts return to a {@link DataValue}. */
@@ -53,29 +54,41 @@ public class JavaScriptFunctionEvaluator {
     private final static String RESULT_DETAILS_ID = "details";
 
     /** The singleton instance. */
-	private final static JavaScriptFunctionEvaluator INSTANCE = new JavaScriptFunctionEvaluator();
+	private final static JavaScripEvaluator INSTANCE = new JavaScripEvaluator();
 
     /** Contains the scope that each of the functions lives in. */
 	private Map<ScriptFunction, Scriptable> functionScopes = new HashMap<>();
 
-    /** The top level scope where all the JavaScript code that forms the base API lives. */
+    /** The top level scope where all the JavaScript code that forms the base rptools API lives. */
+    private Scriptable topLevelScope;
+
+    /** The top level scope where all the JavaScript code that forms the shared API lives. */
     private Scriptable sharedScope;
 
 
 
 
-	/**
+    /**
 	 * Private constructor to stop instantiation.
 	 */
-	private JavaScriptFunctionEvaluator() {
+	private JavaScripEvaluator() {
 
         Context jsContext = Context.enter();
         try {
             URL url = this.getClass().getResource("/net/rptools/parser/javascript/api/BaseAPI.js");
             Path p = Paths.get(url.toURI());
             byte[] bytes = Files.readAllBytes(p);
-            sharedScope = jsContext.initStandardObjects();
-            jsContext.evaluateString(sharedScope, new String(bytes), "BaseAPI", 0, null);
+            topLevelScope = jsContext.initStandardObjects();
+            jsContext.evaluateString(topLevelScope, new String(bytes), "BaseAPI", 0, null);
+
+
+            URL apiurl = this.getClass().getResource("/net/rptools/parser/javascript/api/SharedAPI.js");
+            Path apipath = Paths.get(apiurl.toURI());
+            byte[] apibytes = Files.readAllBytes(apipath);
+            sharedScope = jsContext.newObject(topLevelScope);
+            sharedScope.setPrototype(topLevelScope);
+            sharedScope.setParentScope(null);
+            jsContext.evaluateString(sharedScope, new String(apibytes), "SharedAPI", 0, null);
         } catch (URISyntaxException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (IOException e) {
@@ -86,11 +99,11 @@ public class JavaScriptFunctionEvaluator {
     }
 
     /**
-     * Returns an instance of JavaScriptFunctionEvaluator.
+     * Returns an instance of JavaScripEvaluator.
      *
-     * @return a JavaScriptFunctionEvaluator.
+     * @return a JavaScripEvaluator.
      */
-	public static JavaScriptFunctionEvaluator getInstance() {
+	public static JavaScripEvaluator getInstance() {
 		return INSTANCE;
 	}
 
@@ -137,12 +150,12 @@ public class JavaScriptFunctionEvaluator {
         DataValue result = null;
         try {
 
-            Object rptoolsNS = sharedScope.get("rptools", scope);
+            Object rptoolsNS = topLevelScope.get("rptools", scope);
             if (rptoolsNS == null) {
                 throw new ScriptFunctionException("Can not find the rptools scope");
             }
 
-            Object oArgsConv = ((Scriptable)rptoolsNS).get("convertArgs", sharedScope);
+            Object oArgsConv = ((Scriptable)rptoolsNS).get("convertArgs", topLevelScope);
             if (!(oArgsConv instanceof Function)) {
                 throw new ScriptFunctionException("Can not find argument conversion function.");
             }
@@ -392,10 +405,11 @@ public class JavaScriptFunctionEvaluator {
     }
 
     /**
-     * Resets the list of recently defined functions used during function definition.
+     * Resets the list of recently defined functions and dice used during function definition.
      */
     private void resetRecentlyDefined() {
         ExportJS.clearExportedFunctions();
+        ExportJS.clearExportedDice();
     }
 
     /**
@@ -447,12 +461,12 @@ public class JavaScriptFunctionEvaluator {
      * @param scope The scope to evaluate the JavaScript scripts in.
      * @param scripts The scripts to evaluate.
      *
-     * @return the exported functions.
+     * @return the functions and dice exported.
      *
      * @throws NullPointerException if scripts is null, any of the script names are null or any of
      *         the script bodies are null.
      */
-    private Collection<JavaScriptFunction> evaluateJavaScript(Scriptable scope, Map<String, String> scripts) {
+    private JavaScriptExports evaluateJavaScript(Scriptable scope, Map<String, String> scripts) {
 
         if (scripts == null) {
             throw new NullPointerException("List of scripts to add can not be null.");
@@ -460,7 +474,7 @@ public class JavaScriptFunctionEvaluator {
 
         List<JavaScriptFunction> definedFunctions = new ArrayList<>();
 
-        Context jsConext = Context.enter();
+        Context jsContext = Context.enter();
 
         resetRecentlyDefined();
 
@@ -469,9 +483,9 @@ public class JavaScriptFunctionEvaluator {
             if (scope != null) {
                 scriptScope = scope;
             } else  {
-                scriptScope = jsConext.newObject(sharedScope);
+                scriptScope = jsContext.newObject(sharedScope);
                 scriptScope.setPrototype(sharedScope);
-                scriptScope.setParentScope(null);
+                scriptScope.setParentScope(sharedScope);
             }
 
             for (Map.Entry<String, String> script : scripts.entrySet()) {
@@ -483,7 +497,7 @@ public class JavaScriptFunctionEvaluator {
                     throw new NullPointerException("Script body can not be null");
                 }
 
-                Object result = jsConext.evaluateString(scriptScope, script.getValue(), script.getKey(), 0, null);
+                Object result = jsContext.evaluateString(scriptScope, script.getValue(), script.getKey(), 0, null);
             }
 
 
@@ -492,13 +506,18 @@ public class JavaScriptFunctionEvaluator {
                 definedFunctions.add(function);
             }
 
+            for (JavaScriptDice dice : ExportJS.getExportedDice()) {
+                functionScopes.put(dice.getJavaScriptFunction(), scriptScope);
+            }
+
+            return new JavaScriptExports(definedFunctions, ExportJS.getExportedDice());
+
+
+
         } catch (Exception e) {
-            jsConext.exit();
+            jsContext.exit();
             throw e;
         }
-
-        return definedFunctions;
-
     }
 
     /**
@@ -508,12 +527,11 @@ public class JavaScriptFunctionEvaluator {
      *
      * @param scripts Then name of the scripts and the script body's to add.
      *
-     * @return any functions that were defined.
-     *
+     * @return the functions and dice exported.
      * @throws NullPointerException if scripts is null, or any of the script names or body's are null.
      *
      */
-    public Collection<JavaScriptFunction> addJavaScript(Map<String, String> scripts) {
+    public JavaScriptExports addJavaScripts(Map<String, String> scripts) {
 
         if (scripts == null) {
             throw new NullPointerException("List of scripts to add can not be null.");
@@ -523,7 +541,7 @@ public class JavaScriptFunctionEvaluator {
     }
 
     /**
-     * Adds a JavaScript file to the list od available script files and returns any functions defined
+     * Adds a JavaScript file to the list of available script files and returns any functions defined
      * for the RPTools scripting language.
      *
      * @param name The name of the script.
@@ -533,8 +551,8 @@ public class JavaScriptFunctionEvaluator {
      *
      * @throws  NullPointerException if either argument is null.
      */
-    Collection<JavaScriptFunction> addJavaScript(String name, String js) {
-        return addJavaScript(Collections.singletonMap(name, js));
+    public void addJavaScript(String name, String js) {
+        addJavaScripts(Collections.singletonMap(name, js));
     }
 
 
@@ -542,20 +560,20 @@ public class JavaScriptFunctionEvaluator {
     public void test() {
         Context jsContext = Context.enter();
         try {
-            Object convFuncObject = sharedScope.get("rptools" /*DATAVALUE_CONVERSION_FUNCTION*/, sharedScope);
-            convFuncObject = ((Scriptable)convFuncObject).get("convertToDataValue", sharedScope) ;
+            Object convFuncObject = topLevelScope.get("rptools" /*DATAVALUE_CONVERSION_FUNCTION*/, topLevelScope);
+            convFuncObject = ((Scriptable)convFuncObject).get("convertToDataValue", topLevelScope) ;
             if (!(convFuncObject instanceof Function)) {
                 throw new ScriptFunctionException("Data value conversion function undefined.");
             }
             Function convFunction = (Function) convFuncObject;
 
             Object convFunctionArgs[] = { 1, DataType.LONG.toString() };
-            Object convResult = convFunction.call(jsContext, sharedScope, sharedScope, convFunctionArgs);
+            Object convResult = convFunction.call(jsContext, topLevelScope, topLevelScope, convFunctionArgs);
 
 
             NativeObject obj = (NativeObject) convResult;
             for (Object o : obj.getIds()) {
-                System.out.println(o + " = " + obj.get(o.toString(), sharedScope));
+                System.out.println(o + " = " + obj.get(o.toString(), topLevelScope));
             }
         }  catch(Exception e) {
             jsContext.exit();
@@ -565,6 +583,4 @@ public class JavaScriptFunctionEvaluator {
         jsContext.exit();
 
     }
-
-	
 }

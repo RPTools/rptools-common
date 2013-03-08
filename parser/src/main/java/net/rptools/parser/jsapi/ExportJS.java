@@ -16,7 +16,11 @@ package net.rptools.parser.jsapi;
 
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.permissions.PermissionLevel;
+import net.rptools.lib.permissions.PlayerPermissions;
+import net.rptools.parser.dice.DicePattern;
+import net.rptools.parser.dice.JavaScriptDice;
 import net.rptools.parser.functions.FunctionDefinitionBuilder;
+import net.rptools.parser.functions.javascript.JavaScriptFunction;
 
 import java.util.*;
 
@@ -29,6 +33,9 @@ public class ExportJS {
     /** The temporary list of exported functions */
     private static final List<ExportedFunction> exportedFunctions = new ArrayList<>();
 
+    /** The temporary list of exported dice rolls. */
+    private static final List<JavaScriptDice> exportedDice = new ArrayList<>();
+
     private ExportJS() {
         // Stop instantiation.
     }
@@ -36,7 +43,7 @@ public class ExportJS {
 
     /**
      * Clear the currently exported functions. This should be run before calling a new JavaScript
-     * script so that you can record which functions were defined in this script.
+     * script so that you can record which functions were defined in the script.
      */
     public static void clearExportedFunctions() {
         exportedFunctions.clear();
@@ -76,4 +83,60 @@ public class ExportJS {
         exportedFunctions.add(ef);
     }
 
+    /**
+     * Clear the list of currently exported dice. This should be run before calling a new JavaScript script
+     * so that cou can record which dice were defined in the script.
+     */
+    public static void clearExportedDice() {
+        exportedDice.clear();
+    }
+
+
+    /**
+     * Returns a list of the exported dice.
+     *
+     * @return the exported dice.
+     */
+    public static Collection<JavaScriptDice> getExportedDice() {
+        return Collections.unmodifiableCollection(exportedDice);
+    }
+
+
+    /**
+     * Call back to export JavaScript dice.
+     *
+     * @param name The name of the dice.
+     * @param diceString The dice pattern string.
+     * @param jsFunctionName The name of the JavaScript function to call.
+     * @param caseInsensitive Is the the dice pattern to be exported case insensitive.
+     *
+     */
+    public static void exportDice(String name, String diceString, String jsFunctionName, boolean caseInsensitive) {
+        FunctionDefinitionBuilder fdBuilder = new FunctionDefinitionBuilder();
+        fdBuilder.setReturnType(DataType.RESULT);
+        fdBuilder.setName("Dice Roll(" + name + ")");
+        fdBuilder.setDefaultPermission(PlayerPermissions.getUnspecifiedPlayerPermissions().getPermissionLevel());
+
+
+        DicePattern dicePattern;
+        if (caseInsensitive) {
+            dicePattern = DicePattern.getCaseInsenstiveDicePattern(diceString);
+        } else {
+            dicePattern = DicePattern.getDicePattern(diceString);
+        }
+
+        // Add all of the arguments.
+        for (String argName : dicePattern.getArgNames()) {
+            fdBuilder.addParameter(argName, DataType.DOUBLE);
+
+        }
+
+        JavaScriptFunction jsf = new JavaScriptFunction(jsFunctionName, fdBuilder.toFunctionDefinition());
+
+        JavaScriptDice jsd = new JavaScriptDice(dicePattern, name, jsf);
+
+
+        exportedDice.add(jsd);
+
+    }
 }

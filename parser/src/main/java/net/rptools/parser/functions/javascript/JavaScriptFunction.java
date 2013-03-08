@@ -22,6 +22,10 @@ import net.rptools.parser.functions.FunctionDefinition;
 import net.rptools.parser.functions.ScriptFunction;
 import net.rptools.parser.functions.ScriptFunctionException;
 
+/**
+ * The JavaScriptFunction implements the ScriptFunction interface on behalf of JavaScript functions that are exported
+ * to the RPTools script.
+ */
 public class JavaScriptFunction implements ScriptFunction {
 
 
@@ -40,7 +44,7 @@ public class JavaScriptFunction implements ScriptFunction {
      *
      * @throws NullPointerException if either argument is null.
      */
-    JavaScriptFunction(String jsFuncName, FunctionDefinition def) {
+    public JavaScriptFunction(String jsFuncName, FunctionDefinition def) {
         if (jsFuncName == null) {
             throw new NullPointerException("Java Script function name can not be null.");
         }
@@ -59,7 +63,7 @@ public class JavaScriptFunction implements ScriptFunction {
 
 	@Override
 	public DataValue call(ScriptContext context, Map<String, DataValue> args) throws ScriptFunctionException {
-        return JavaScriptFunctionEvaluator.getInstance().call(context, this, args, functionDefinition.getReturnType());
+        return JavaScripEvaluator.getInstance().call(context, this, args, functionDefinition.getReturnType());
 	}
 
     /**

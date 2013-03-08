@@ -25,7 +25,8 @@ import net.rptools.lib.datavalue.DataValue;
  * The EvaluatedBlock class holds the results of a block of text that has been
  * evaluated with {@link TextBlockEvaluator#evaluate(String)}.
  */
-public class EvaluatedBlock {
+public class
+        EvaluatedBlock {
 	/** The text block output as a freemarker template,*/
 	private final String templatedText;
 	

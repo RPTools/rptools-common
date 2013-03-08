@@ -41,7 +41,7 @@ function doListSumR(args) {
     var val = 0;
     var vals = [];
     var details = "";
-    for (x in args.nums) {
+    for (var x in args.nums) {
         vals.push(args.nums[x]);
 
         val += args.nums[x];
@@ -79,7 +79,7 @@ function rand(max) {
 
 function arrayAsString(arr, delim) {
     var str = "";
-    for (x in arr) {
+    for (var x in arr) {
         if (str == "") {
             str = arr[x];
         } else {
@@ -106,3 +106,38 @@ function doRollSomeDice(args) {
     //return new Result().setValue(res).setDetails(details).setIndividualValues(ivals);
     return { value: res, details: details, individual: ivals };
 }
+
+function doRollSomeDice2(args) {
+     var times = args.num;
+     var sides = args.sides;
+
+     var res = 0;
+     var ivals = [];
+     while (times--) {
+         var roll = rand(sides);
+         res += roll;
+         ivals.push(roll);
+     }
+
+     var details = arrayAsString(ivals, " + ");
+
+     //return new Result().setValue(res).setDetails(details).setIndividualValues(ivals);
+     if (args.__summed || args.__verbose == false) {
+        return { value: res, details: details, individual: ivals };
+     } else {
+        return { value: ivals, details: details, individual: ivals };
+     }
+ }
+
+rptools.exportDice("Test JS Dice 1", "#{num:1}j#{sides}", "doRollSomeDice2");
+rptools.exportCaseInsensitiveDice("Test JS Dice 2", "#{num:1}js#{sides}", "doRollSomeDice2");
+
+
+function doTest() {
+    var a1 = rptools.jslibrary.getLibrary("Test Library", 1);
+    return a1.test3();
+}
+
+var f4 = new ExportedFunction("testJSAPI", ExportedFunction.DATA_TYPE_STRING, "doTest");
+f4.export();
+delete f4;

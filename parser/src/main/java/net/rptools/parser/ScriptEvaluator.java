@@ -14,13 +14,20 @@
  */
 package net.rptools.parser;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.datavalue.DataType;
+import net.rptools.parser.dice.DiceRoller;
+import net.rptools.parser.dice.JavaScriptDice;
+import net.rptools.parser.functions.FunctionManager;
+import net.rptools.parser.functions.ScriptFunction;
+import net.rptools.parser.functions.javascript.JavaScripEvaluator;
+import net.rptools.parser.functions.javascript.JavaScriptExports;
 import net.rptools.parser.symboltable.SymbolTable;
 import net.rptools.parser.tree.ScriptTreeNode;
 import net.rptools.parser.tree.MTScriptTreeParser;
@@ -47,6 +54,10 @@ public class ScriptEvaluator  {
 	/** The index of the input text to process. */
 	private int index;
 
+
+    /** Has the ScriptEvaluator been initialised. */
+    private static boolean initialised = false;
+
 	/**
 	 * Gets a ScriptEvaluator object to evaluate a script using
 	 * the supplied symbol table for lookups and setting values.
@@ -58,6 +69,11 @@ public class ScriptEvaluator  {
 	 *         provided are null.
 	 */
 	private ScriptEvaluator(ScriptContext context, Collection<String> text) {
+        if (!initialised) {
+            initJSApi();
+            initialised = true;
+        }
+
 		if (context == null) {
 			throw new NullPointerException("Script context can not be null");
 		}
@@ -198,4 +214,61 @@ public class ScriptEvaluator  {
 		}
 		return results;
 	}
+
+    /**
+     * Adds JavaScript code to the script engine and executes it. This code can provide either an API
+     * for other JavaScript code or export functions or dice to RPTools script. Each of these scripts
+     * will be run in their own scope.
+     *
+     * If you want to run more than one script in the same scope then you need to use the
+     * {@link #addJavaScripts(java.util.Map)} method.
+     *
+     * @param name The name of the script or file.
+     * @param jsBody The JavaScript code.
+     */
+    public static void addJavaScript(String name, String jsBody) {
+        addJavaScripts(Collections.singletonMap(name, jsBody));
+    }
+
+    /**
+     * Adds JavaScript code to the script engine and executes it. This code can provide either an API for other
+     * JavaScript code or export functions or dice to RPTools script. All of these scripts will be run in the same
+     * scope.
+     *
+     * @param scripts The name and scripts to run.
+     */
+    public static void addJavaScripts(Map<String, String> scripts) {
+        JavaScriptExports exports = JavaScripEvaluator.getInstance().addJavaScripts(scripts);
+        for (ScriptFunction sf : exports.getExportedFunctions()) {
+            FunctionManager.getInstance().definFunction(sf);
+        }
+
+        for (JavaScriptDice jsd : exports.getExportedDice()) {
+            DiceRoller.getInstance().addUserDefinedDice(jsd);
+        }
+    }
+
+
+    // TODO: Temp remove
+    /**
+     * Initialise the JavaScript part of the script API.
+     */
+    private void initJSApi() {
+        try {
+            JavaScripEvaluator.getInstance().test();
+            URL url = FunctionManager.class.getResource("/net/rptools/parser/javascript/api/API.js");
+            Path p = Paths.get(url.toURI());
+            byte[] bytes = Files.readAllBytes(p);
+            addJavaScript("JS API", new String(bytes));
+            url = FunctionManager.class.getResource("/net/rptools/parser/javascript/api/API2.js");
+            p = Paths.get(url.toURI());
+            byte[] bytes1 = Files.readAllBytes(p);
+            addJavaScript("JS API 2", new String(bytes1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (ExceptionInInitializerError eie) {
+            eie.printStackTrace();
+            eie.getCause().printStackTrace();
+        }
+    }
 }

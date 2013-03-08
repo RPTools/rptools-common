@@ -175,9 +175,9 @@ public final class DataValueFactory {
 	/**
 	 * Creates a {@link DataValue} of type {@link DataType#LIST} containing
 	 * {@link DataType#LONG} values created from the Collection that is passed in.
-	 * 
+	 *
 	 * @param vals The long values to create DataTypes for.
-	 * 
+	 *
 	 * @return a {@link DataType#LIST} DataType containing the values.
 	 */
 	public static DataValue longListValue(Collection<Long> vals) {
@@ -185,9 +185,62 @@ public final class DataValueFactory {
 		for (Long l : vals) {
 			lst.add(longValue(l));
 		}
-		
+
 		return listValue(lst);
 	}
+
+    /**
+     * Creates a {@link DataValue} of type {@link DataType#LIST} containing
+     * {@link DataType#LONG} values created from the Collection that is passed in.
+     *
+     * @param vals The integer values to create DataTypes for.
+     *
+     * @return a {@link DataType#LIST} DataType containing the values.
+     */
+    public static DataValue intListValue(Collection<Integer> vals) {
+        List<DataValue> lst = new ArrayList<>(vals.size());
+        for (Integer i : vals) {
+            lst.add(longValue(i));
+        }
+
+        return listValue(lst);
+    }
+
+
+    /**
+     * Creates a {@link DataValue} of type {@link DataType#LIST} containing
+     * {@link DataType#LONG} values created from an array of integers.
+     *
+     * @param arr The array to create the list from.
+     *
+     * @return a {@link DataType#LIST} DataType containing the values.
+     */
+    public static DataValue listValueFromArray(int[] arr) {
+        List<DataValue> lst = new ArrayList<>(arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            lst.add(longValue(arr[i]));
+        }
+
+        return listValue(lst);
+    }
+
+    /**
+     * Creates a {@link DataValue} of type {@link DataType#LIST} containing
+     * {@link DataType#LONG} values created from an array of longs.
+     *
+     * @param arr The array to create the list from.
+     *
+     * @return a {@link DataType#LIST} DataType containing the values.
+     */
+    public static DataValue listValueFromArray(long[] arr) {
+        List<DataValue> lst = new ArrayList<>(arr.length);
+        for (int i = 0; i < arr.length; i++) {
+            lst.add(longValue(arr[i]));
+        }
+
+        return listValue(lst);
+    }
+
 
 
     /**

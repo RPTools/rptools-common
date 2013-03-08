@@ -79,14 +79,14 @@ public final class FunctionDispatcher {
 	 */
 	private  ScriptFunction getFunction(String  functionName) {
 		assert functionName != null : "Function name can not be null";
-		ScriptFunction func = null;
+		ScriptFunction func;
 		
 		if (functionName.startsWith(BUILT_IN_PREFIX)) {
-			func = FunctionManager.getBuiltinFunction(functionName.substring(BUILT_IN_PREFIX.length()));
-		} else if (FunctionManager.containsUserFunction(functionName)){
-			func = FunctionManager.getUserFunction(functionName);
+			func = FunctionManager.getInstance().getBuiltinFunction(functionName.substring(BUILT_IN_PREFIX.length()));
+		} else if (FunctionManager.getInstance().containsUserFunction(functionName)){
+			func = FunctionManager.getInstance().getUserFunction(functionName);
 		} else {
-			func = FunctionManager.getBuiltinFunction(functionName);
+			func = FunctionManager.getInstance().getBuiltinFunction(functionName);
 		}
 		
 		return func;
@@ -138,7 +138,7 @@ public final class FunctionDispatcher {
 		}
 		
 		PermissionLevel plevel = context.getPlayerPermissions().getPermissionLevel();
-		PermissionLevel requiredLevel = FunctionManager.getFunctionPermission(function);
+		PermissionLevel requiredLevel = FunctionManager.getInstance().getFunctionPermission(function);
 		
 		if (plevel.hasAtLeastPermission(requiredLevel) == false) {
 			throw new EvaluationPermissionException("You do not have permission to call " + functionName);

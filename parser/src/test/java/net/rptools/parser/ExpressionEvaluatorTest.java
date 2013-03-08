@@ -463,6 +463,29 @@ public class ExpressionEvaluatorTest {
             dv = ScriptEvaluator.getInstance("rollSomeDice(sides: 6)").evaluateNext();
             System.out.println(dv);
 
+            dv = ScriptEvaluator.getInstance("1d6").evaluateNext();
+            System.out.println("1d6 = " + dv);
+
+
+            dv = ScriptEvaluator.getInstance("5d10!s").evaluateNext();
+            System.out.println("5d10!s = " + dv);
+
+            // TODO this shows up a bug
+            dv = ScriptEvaluator.getInstance("6d10!").evaluateNext();
+            System.out.println("6d10! = " + dv);
+
+            dv = ScriptEvaluator.getInstance("d6").evaluateNext();
+            System.out.println("d6 = " + dv);
+
+            dv = ScriptEvaluator.getInstance("5j6").evaluateNext();
+            System.out.println("5j6 = " + dv);
+
+            dv = ScriptEvaluator.getInstance("5Js6!").evaluateNext();
+            System.out.println("5Js6! = " + dv);
+
+            dv = ScriptEvaluator.getInstance("testJSAPI()").evaluateNext();
+            System.out.println("testJSAPI() = " + dv);
+
 
         } catch (Exception e) {
             e.printStackTrace();

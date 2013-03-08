@@ -47,7 +47,7 @@ public class ExportedFunction {
      *
      * @throws  NullPointerException if any of the arguments are null.
      */
-    public ExportedFunction(String name, DataType rType, Object params, String jsFuncName,
+    ExportedFunction(String name, DataType rType, Object params, String jsFuncName,
                             PermissionLevel perms) {
         if (name == null) {
             throw new NullPointerException("Name of exported function is null");

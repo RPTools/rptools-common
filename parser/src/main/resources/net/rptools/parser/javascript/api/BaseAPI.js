@@ -213,9 +213,46 @@ rptools.convertArgs = function(args) {
     return argsObj;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function used to export a case sensitive dice to the RPTools script.
+//
+// Parameters:
+//      name                The name of the function.
+//      pattern             The dice pattern.
+//      jsFunctionName      The name of the JavaScript function.
+//
+rptools.exportDice = function(name, pattern, jsFunctionName) {
+    net.rptools.parser.jsapi.ExportJS.exportDice(name, pattern, jsFunctionName, false);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Function used to export a case insensitive dice to the RPTools script.
+//
+// Parameters:
+//      name                The name of the function.
+//      pattern             The dice pattern.
+//      jsFunctionName      The name of the JavaScript function.
+//
+rptools.exportCaseInsensitiveDice = function(name, pattern, jsFunctionName) {
+    net.rptools.parser.jsapi.ExportJS.exportDice(name, pattern, jsFunctionName, true);
+}
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Class used to export functions to the RPTools script.
+//
+// Parameters:
+//      name                The name of the function.
+//      returnType          The return type of the function.
+//      jsFunctionName      The name of the JavaScript function.
+//      permission          The default permission required to execute the function.
 //
 function ExportedFunction(name, returnType, jsFunctionName, permission) {
     if (!name) {
@@ -312,7 +349,6 @@ ExportedFunction.prototype.export = function() {
                                                      this.returnType, this.jsFunctionName,
                                                      this.permission);
 };
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //

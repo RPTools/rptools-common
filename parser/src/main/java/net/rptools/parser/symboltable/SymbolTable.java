@@ -20,6 +20,7 @@ import net.rptools.lib.datavalue.DataValue;
 import net.rptools.lib.datavalue.DataType;
 import net.rptools.lib.result.RollExpression;
 import net.rptools.parser.ExpressionEvaluatorException;
+import net.rptools.parser.ScriptContext;
 
 /**
  * Interface that describes objects that can perform all the lookups and 
@@ -297,7 +298,8 @@ public interface SymbolTable {
 	/**
 	 * Resolves the named roll expression. Resolving a roll will automatically
 	 * add the roll result to the symbol table.
-	 * 
+	 *
+     * @param context The script context to perform the roll in.
 	 * @param name The name of the roll expression to resolve.
 	 * 
 	 * @return The result of the roll.
@@ -305,7 +307,7 @@ public interface SymbolTable {
 	 * @throws NullPointerException if name is null.
 	 * @throws IllegalArgumentException if the roll expression does not exist.
 	 */
-	public DataValue resolveRoll(String name);
+	public DataValue resolveRoll(ScriptContext context, String name) throws ExpressionEvaluatorException;
 
 	/**
 	 * Checks to see if the the specified label exists in the symbol table.
